@@ -1,2 +1,49 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #ffffff; }
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #FAFAF7;
+  --color-ink: #0A0A0A;
+  --color-olive: #6E7A3E;
+  --color-olive-deep: #4F5A2C;
+  --color-olive-mist: #C7CDA8;
+  --color-hairline: #ECECE6;
+  --color-gate: #0E0F0C;
+  --shadow-lift: 0 18px 40px -24px rgba(10,10,10,0.45);
+}
+
+/* Expose GeistMono under the canonical --font-mono variable */
+:root {
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-display), sans-serif;
+}
+
+/* Suppress native cursor on fine-pointer devices when custom cursor is active */
+.js-cursor,
+.js-cursor * {
+  cursor: none !important;
+}
+
+/* Olive focus ring for keyboard / switch navigation */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-olive);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Fixed grain overlay — feTurbulence fractal noise at 3.5% opacity */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 9999;
+}
