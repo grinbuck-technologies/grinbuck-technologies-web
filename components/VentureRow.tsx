@@ -62,7 +62,7 @@ export default function VentureRow({ venture, index, isLast }: Props) {
 
   const nameStyle: React.CSSProperties = {
     fontFamily: "var(--font-display)",
-    fontSize: "clamp(2.25rem, 9vw, 7rem)",
+    fontSize: "clamp(1.75rem, 6vw, 4.75rem)",
     fontWeight: 540,
     letterSpacing: "-0.03em",
     lineHeight: 1,
@@ -83,7 +83,7 @@ export default function VentureRow({ venture, index, isLast }: Props) {
         onMouseMove={onMagneticMove}
         style={{
           display: "block",
-          paddingBlock: "clamp(1.25rem, 2.5vw, 2.25rem)",
+          paddingBlock: "clamp(1rem, 2vw, 1.6rem)",
           minHeight: "44px", // mobile tap target
           borderTop: "1px solid var(--color-hairline)",
           ...(isLast && { borderBottom: "1px solid var(--color-hairline)" }),

@@ -1,8 +1,7 @@
 "use client";
 import { useState } from "react";
 import IntroGate from "@/components/IntroGate";
-import Hero from "@/components/Hero";
-import Ventures from "@/components/Ventures";
+import SceneStage from "@/components/SceneStage";
 import Cursor from "@/components/Cursor";
 
 export default function Home() {
@@ -12,8 +11,7 @@ export default function Home() {
     <>
       <Cursor />
       <IntroGate onOpen={() => setGateOpen(true)} />
-      <Hero gateOpen={gateOpen} />
-      <Ventures />
+      <SceneStage gateOpen={gateOpen} />
     </>
   );
 }
