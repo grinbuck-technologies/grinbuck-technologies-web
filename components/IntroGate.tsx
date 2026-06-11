@@ -1,13 +1,16 @@
 "use client";
-import { useEffect, useRef } from "react";
-import gsap from "@/lib/gsap";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import gsap, { EASE_EXIT } from "@/lib/gsap";
+import { REDUCED_MOTION_QUERY, Z_INTRO_GATE } from "@/lib/constants";
 
 type Props = { onOpen?: () => void };
 
 export default function IntroGate({ onOpen }: Props) {
   // Stable ref so the effect closure never captures a stale onOpen
   const onOpenRef = useRef(onOpen);
-  onOpenRef.current = onOpen;
+  useLayoutEffect(() => {
+    onOpenRef.current = onOpen;
+  });
 
   const gateRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
@@ -16,7 +19,7 @@ export default function IntroGate({ onOpen }: Props) {
   const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mq = window.matchMedia(REDUCED_MOTION_QUERY);
 
     // Reduced motion: instant dismiss, no scroll lock needed
     if (mq.matches) {
@@ -40,8 +43,8 @@ export default function IntroGate({ onOpen }: Props) {
       // Text fades during the 0.8 s hold (first 0.4 s)
       .to(textRef.current, { opacity: 0, duration: 0.4, ease: "power2.in" })
       // 0.4 s later → 0.8 s total hold after bar completes → panels split
-      .to(leftRef.current, { xPercent: -100, duration: 1.1, ease: "weightOut" }, "+=0.4")
-      .to(rightRef.current, { xPercent: 100, duration: 1.1, ease: "weightOut" }, "<");
+      .to(leftRef.current, { xPercent: -100, duration: 1.1, ease: EASE_EXIT }, "+=0.4")
+      .to(rightRef.current, { xPercent: 100, duration: 1.1, ease: EASE_EXIT }, "<");
 
     return () => {
       tl.kill();
@@ -58,7 +61,7 @@ export default function IntroGate({ onOpen }: Props) {
   };
 
   return (
-    <div ref={gateRef} style={{ position: "fixed", inset: 0, zIndex: 100 }}>
+    <div ref={gateRef} style={{ position: "fixed", inset: 0, zIndex: Z_INTRO_GATE }}>
       {/* Left and right panels */}
       <div ref={leftRef} style={{ ...panel, left: 0 }} />
       <div ref={rightRef} style={{ ...panel, right: 0 }} />

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 type TransitionFn = (target: number, prev: number, direction: number) => Promise<void>;
 
@@ -25,8 +25,10 @@ export function useSceneNavigation({ enabled, count, onTransition }: Args) {
   const enabledRef = useRef(enabled);
   const cbRef = useRef(onTransition);
 
-  enabledRef.current = enabled;
-  cbRef.current = onTransition;
+  useLayoutEffect(() => {
+    enabledRef.current = enabled;
+    cbRef.current = onTransition;
+  });
 
   useEffect(() => {
     const trigger = (direction: number) => {

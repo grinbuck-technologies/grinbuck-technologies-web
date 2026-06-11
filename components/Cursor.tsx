@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
-import gsap from "@/lib/gsap";
+import gsap, { EASE_ENTER } from "@/lib/gsap";
+import { REDUCED_MOTION_QUERY, Z_CURSOR } from "@/lib/constants";
 
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -9,7 +10,7 @@ export default function Cursor() {
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
     // Injected <style> beats any inline cursor:pointer — !important in a stylesheet
     // wins over inline styles, so even <a style="cursor:pointer"> gets suppressed.
@@ -60,7 +61,7 @@ export default function Cursor() {
           scale:           near ? 2.5 : 1,
           backgroundColor: near ? "var(--color-olive)" : "var(--color-ink)",
           duration: 0.35,
-          ease: "weight",
+          ease: EASE_ENTER,
         });
       }
     };
@@ -83,7 +84,7 @@ export default function Cursor() {
         borderRadius: "50%",
         background: "var(--color-ink)",
         pointerEvents: "none",
-        zIndex: 99999,
+        zIndex: Z_CURSOR,
         willChange: "transform",
       }}
     />

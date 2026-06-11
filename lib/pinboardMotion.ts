@@ -86,8 +86,8 @@ export function bindCardPointer(el: HTMLElement, opts: PointerOpts) {
     if (!board) return;
 
     const boardRect = board.getBoundingClientRect();
-    let left = e.clientX - boardRect.left - offsetX;
-    let top = e.clientY - boardRect.top - offsetY;
+    const left = e.clientX - boardRect.left - offsetX;
+    const top = e.clientY - boardRect.top - offsetY;
     const clamped = clampToBoard(left, top, el.offsetWidth, el.offsetHeight, boardRect.width, boardRect.height);
     el.style.left = `${clamped.left}px`;
     el.style.top = `${clamped.top}px`;

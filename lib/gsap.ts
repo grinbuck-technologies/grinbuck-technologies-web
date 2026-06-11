@@ -8,9 +8,12 @@ import { Draggable } from "gsap/Draggable";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin, InertiaPlugin, Draggable);
 
-// Brand easing curves
-CustomEase.create("weight", "0.16,1,0.3,1");     // snappy deceleration — enter/reveal
-CustomEase.create("weightOut", "0.7,0,0.84,0");  // strong acceleration — exit/conceal
+// Brand easing curves — import these string constants instead of hardcoding the names
+export const EASE_ENTER = "weight" as const;
+export const EASE_EXIT = "weightOut" as const;
+
+CustomEase.create(EASE_ENTER, "0.16,1,0.3,1");
+CustomEase.create(EASE_EXIT, "0.7,0,0.84,0");
 
 export default gsap;
 export { ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin, InertiaPlugin, Draggable };

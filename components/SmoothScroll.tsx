@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { ReactLenis, useLenis } from "lenis/react";
-import gsap from "@/lib/gsap";
-import { ScrollTrigger } from "@/lib/gsap";
+import gsap, { ScrollTrigger } from "@/lib/gsap";
+import { REDUCED_MOTION_QUERY } from "@/lib/constants";
 
 /**
  * Rendered inside the ReactLenis context so useLenis() can subscribe
@@ -42,7 +42,9 @@ export default function SmoothScroll({ children }: Props) {
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
-    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    startTransition(() => {
+      setReduced(window.matchMedia(REDUCED_MOTION_QUERY).matches);
+    });
   }, []);
 
   // Reduced motion: render children without Lenis — native scroll, no ticker sync

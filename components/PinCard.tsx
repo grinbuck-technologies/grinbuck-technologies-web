@@ -1,12 +1,10 @@
 "use client";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import gsap from "@/lib/gsap";
+import gsap, { EASE_ENTER } from "@/lib/gsap";
 import type { Venture } from "@/lib/ventures";
 import BrassPin from "@/components/BrassPin";
-import { CARD_SHADOW } from "@/lib/pinboard";
-
-const CARD_SHADOW_HOVER = "8px 16px 40px rgba(0,0,0,0.38)";
+import { CARD_SHADOW, CARD_SHADOW_HOVER } from "@/lib/pinboard";
 
 type Props = {
   venture: Venture;
@@ -26,13 +24,13 @@ export default function PinCard({ venture, rot, index, registerRef, onUnpin }: P
 
   const enter = () => {
     if (locked() || !cardRef.current) return;
-    gsap.to(ref.current, { rotation: 0, duration: 0.3, ease: "weight" });
-    gsap.to(cardRef.current, { boxShadow: CARD_SHADOW_HOVER, duration: 0.3, ease: "weight" });
+    gsap.to(ref.current, { rotation: 0, duration: 0.3, ease: EASE_ENTER });
+    gsap.to(cardRef.current, { boxShadow: CARD_SHADOW_HOVER, duration: 0.3, ease: EASE_ENTER });
   };
   const leave = () => {
     if (locked() || !cardRef.current) return;
-    gsap.to(ref.current, { rotation: rot, duration: 0.3, ease: "weight" });
-    gsap.to(cardRef.current, { boxShadow: CARD_SHADOW, duration: 0.3, ease: "weight" });
+    gsap.to(ref.current, { rotation: rot, duration: 0.3, ease: EASE_ENTER });
+    gsap.to(cardRef.current, { boxShadow: CARD_SHADOW, duration: 0.3, ease: EASE_ENTER });
   };
 
   const mono = (size: string, opacity: number, color = "var(--color-ink)"): React.CSSProperties => ({

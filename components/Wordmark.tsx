@@ -1,7 +1,8 @@
 "use client";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import gsap, { SplitText } from "@/lib/gsap";
+import gsap, { EASE_ENTER, SplitText } from "@/lib/gsap";
+import { REDUCED_MOTION_QUERY } from "@/lib/constants";
 
 type Props = { gateOpen: boolean; rootRef: React.RefObject<HTMLDivElement | null> };
 
@@ -18,7 +19,7 @@ export default function Wordmark({ gateOpen, rootRef }: Props) {
     () => {
       if (!gateOpen) return;
 
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (window.matchMedia(REDUCED_MOTION_QUERY).matches) {
         gsap.set(wordRef.current, { opacity: 1 });
         gsap.set(buckRef.current, { color: "var(--color-olive)" });
         gsap.set(subtitleRef.current, { opacity: 1, visibility: "visible" });
@@ -40,10 +41,10 @@ export default function Wordmark({ gateOpen, rootRef }: Props) {
         .fromTo(
           allChars,
           { yPercent: 120, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 1.1, ease: "weight", stagger: 0.045 }
+          { yPercent: 0, opacity: 1, duration: 1.1, ease: EASE_ENTER, stagger: 0.045 }
         )
-        .to(buckRef.current, { color: "var(--color-olive)", duration: 0.6, ease: "weight" }, "+=0.25")
-        .to(subtitleRef.current, { opacity: 1, visibility: "visible", duration: 0.6, ease: "weight" }, "<0.8")
+        .to(buckRef.current, { color: "var(--color-olive)", duration: 0.6, ease: EASE_ENTER }, "+=0.25")
+        .to(subtitleRef.current, { opacity: 1, visibility: "visible", duration: 0.6, ease: EASE_ENTER }, "<0.8")
         .to(
           wordRef.current,
           { fontWeight: "+=8", duration: 3, yoyo: true, repeat: -1, ease: "sine.inOut" },

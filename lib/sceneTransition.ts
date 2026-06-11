@@ -1,4 +1,5 @@
-import gsap from "@/lib/gsap";
+import gsap, { EASE_ENTER, EASE_EXIT } from "@/lib/gsap";
+import { REDUCED_MOTION_QUERY } from "@/lib/constants";
 
 export type SceneRefs = {
   track: HTMLElement | null;
@@ -38,7 +39,7 @@ export function animateToScene(
   count: number,
   label: string
 ): Promise<void> {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
   if (reduced) {
     setSceneState(target, refs, count);
@@ -57,15 +58,15 @@ export function animateToScene(
       }, 0)
       .set(refs.curtainText, { opacity: 0 }, 0)
       // Close — panels sweep in to meet at center (~0.5s).
-      .to(refs.leftPanel, { xPercent: 0, duration: 0.5, ease: "weightOut" }, 0)
-      .to(refs.rightPanel, { xPercent: 0, duration: 0.5, ease: "weightOut" }, 0)
+      .to(refs.leftPanel, { xPercent: 0, duration: 0.5, ease: EASE_EXIT }, 0)
+      .to(refs.rightPanel, { xPercent: 0, duration: 0.5, ease: EASE_EXIT }, 0)
       // Covered — instant scene + wordmark dock swap behind the panels.
       .add(() => setSceneState(target, refs, count), 0.5)
       // Label fades in once fully closed, holds 400ms, fades out before retract.
-      .to(refs.curtainText, { opacity: 1, duration: 0.2, ease: "weight" }, 0.5)
-      .to(refs.curtainText, { opacity: 0, duration: 0.2, ease: "weight" }, 1.1)
+      .to(refs.curtainText, { opacity: 1, duration: 0.2, ease: EASE_ENTER }, 0.5)
+      .to(refs.curtainText, { opacity: 0, duration: 0.2, ease: EASE_ENTER }, 1.1)
       // Open — panels retract, revealing the swapped scene.
-      .to(refs.leftPanel, { xPercent: -100, duration: 0.55, ease: "weight" }, 1.3)
-      .to(refs.rightPanel, { xPercent: 100, duration: 0.55, ease: "weight" }, 1.3);
+      .to(refs.leftPanel, { xPercent: -100, duration: 0.55, ease: EASE_ENTER }, 1.3)
+      .to(refs.rightPanel, { xPercent: 100, duration: 0.55, ease: EASE_ENTER }, 1.3);
   });
 }

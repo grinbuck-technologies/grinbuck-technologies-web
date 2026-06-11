@@ -3,8 +3,10 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
 import gsap from "@/lib/gsap";
+import { Z_CURTAIN, Z_CURTAIN_TEXT, Z_WORDMARK } from "@/lib/constants";
 import Wordmark from "@/components/Wordmark";
 import PinBoard from "@/components/PinBoard";
+import ClosingScene from "@/components/ClosingScene";
 import { ventures } from "@/lib/ventures";
 import { paginate, CARDS_PER_PAGE } from "@/lib/pinboard";
 import { useSceneNavigation } from "@/lib/useSceneNavigation";
@@ -24,6 +26,7 @@ const scenes: Scene[] = [
       <PinBoard ventures={items} active={active} page={pageIndex} totalPages={venturePages.length} />
     ),
   })),
+  { label: "About Us", render: () => <ClosingScene /> },
 ];
 
 type Props = { gateOpen: boolean };
@@ -100,7 +103,7 @@ export default function SceneStage({ gateOpen }: Props) {
     background: "var(--color-gate)",
     pointerEvents: "none",
     willChange: "transform",
-    zIndex: 50,
+    zIndex: Z_CURTAIN,
   };
 
   return (
@@ -130,7 +133,7 @@ export default function SceneStage({ gateOpen }: Props) {
           alignItems: "center",
           justifyContent: "center",
           pointerEvents: "none",
-          zIndex: 5,
+          zIndex: Z_WORDMARK,
         }}
       >
         <Wordmark gateOpen={gateOpen} rootRef={wordmarkRef} />
@@ -149,7 +152,7 @@ export default function SceneStage({ gateOpen }: Props) {
           background: "var(--color-olive)",
           transformOrigin: "center",
           pointerEvents: "none",
-          zIndex: 5,
+          zIndex: Z_WORDMARK,
         }}
       />
 
@@ -166,7 +169,7 @@ export default function SceneStage({ gateOpen }: Props) {
           alignItems: "center",
           justifyContent: "center",
           pointerEvents: "none",
-          zIndex: 51,
+          zIndex: Z_CURTAIN_TEXT,
         }}
       >
         <span

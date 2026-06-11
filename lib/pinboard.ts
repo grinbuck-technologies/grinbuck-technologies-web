@@ -1,6 +1,7 @@
 export type PinSlot = { x: number; y: number };
 
 export const CARD_SHADOW = "3px 6px 20px rgba(0,0,0,0.25)";
+export const CARD_SHADOW_HOVER = "8px 16px 40px rgba(0,0,0,0.38)";
 export const CORK_TEXTURE =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)' opacity='0.15'/%3E%3C/svg%3E\")";
 export const CARDS_PER_PAGE = 6;

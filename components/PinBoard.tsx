@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import gsap from "@/lib/gsap";
+import gsap, { EASE_ENTER } from "@/lib/gsap";
 import type { Venture } from "@/lib/ventures";
 import { CORK_TEXTURE, generateRotations, getPinSlots } from "@/lib/pinboard";
 import { bindCardPointer, dropCard, placeCard, snapCard, slotPx } from "@/lib/pinboardMotion";
@@ -19,7 +19,9 @@ export default function PinBoard({ ventures, active, page, totalPages }: Props) 
 
   useEffect(() => {
     fallen.current.clear();
-    setRotations(generateRotations(ventures.length));
+    startTransition(() => {
+      setRotations(generateRotations(ventures.length));
+    });
   }, [ventures.length]);
 
   const snapTo = (i: number, slotIdx: number) => {
@@ -73,7 +75,7 @@ export default function PinBoard({ ventures, active, page, totalPages }: Props) 
       el.dataset.fallen = "";
       el.style.zIndex = "1";
       const pos = slotPx(rect, PIN_SLOTS[i]);
-      gsap.to(el, { left: pos.left, top: pos.top, rotation: rotations[i], duration: 0.8, ease: "weight" });
+      gsap.to(el, { left: pos.left, top: pos.top, rotation: rotations[i], duration: 0.8, ease: EASE_ENTER });
     });
   }, { dependencies: [active, rotations], scope: boardRef });
 
