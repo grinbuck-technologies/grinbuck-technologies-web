@@ -44,14 +44,23 @@ export default function PinBoard({ ventures, active, page, totalPages }: Props) 
     dropCard(el, board, fallen.current.size - 1);
   };
 
-  const bindPointer = (i: number, el: HTMLDivElement) => {
-    bindCardPointer(el, {
-      getBoard: () => boardRef.current,
-      slots: PIN_SLOTS,
-      onRepin: (slot) => snapTo(i, slot),
-      onFallen: () => { fallen.current.add(i); el.dataset.fallen = "1"; },
+  useEffect(() => {
+    const cleanups: (() => void)[] = [];
+    cardEls.current.forEach((el, i) => {
+      if (!el) return;
+      cleanups.push(
+        bindCardPointer(el, {
+          getBoard: () => boardRef.current,
+          slots: PIN_SLOTS,
+          onRepin: (slot) => snapTo(i, slot),
+          onFallen: () => { fallen.current.add(i); el.dataset.fallen = "1"; },
+        })
+      );
     });
-  };
+    return () => cleanups.forEach(fn => fn());
+  // snapTo is stable within a given rotations value; page/rotations cover all card-change scenarios
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, rotations]);
 
   useGSAP(
     () => {
@@ -101,7 +110,7 @@ export default function PinBoard({ ventures, active, page, totalPages }: Props) 
             venture={ventures[i]}
             rot={rot}
             index={i}
-            registerRef={(idx, el) => { cardEls.current[idx] = el; if (el) bindPointer(idx, el); }}
+            registerRef={(idx, el) => { cardEls.current[idx] = el; }}
             onUnpin={() => drop(i)}
           />
         ))}

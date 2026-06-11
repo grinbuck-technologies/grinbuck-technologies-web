@@ -57,8 +57,8 @@ type PointerOpts = {
   onFallen: () => void;
 };
 
-export function bindCardPointer(el: HTMLElement, opts: PointerOpts) {
-  if (el.dataset.pointerBound === "1") return;
+export function bindCardPointer(el: HTMLElement, opts: PointerOpts): () => void {
+  if (el.dataset.pointerBound === "1") return () => {};
   el.dataset.pointerBound = "1";
 
   let offsetX = 0;
@@ -123,4 +123,12 @@ export function bindCardPointer(el: HTMLElement, opts: PointerOpts) {
   el.addEventListener("pointermove", onMove);
   el.addEventListener("pointerup", onUp);
   el.addEventListener("pointercancel", onUp);
+
+  return () => {
+    el.removeEventListener("pointerdown", onDown);
+    el.removeEventListener("pointermove", onMove);
+    el.removeEventListener("pointerup", onUp);
+    el.removeEventListener("pointercancel", onUp);
+    delete el.dataset.pointerBound;
+  };
 }
