@@ -3,6 +3,7 @@ export type Venture = {
   description: string;
   url: string;
   status: string;
+  icon?: string;
 };
 
 export const ventures: Venture[] = [
@@ -10,4 +11,7 @@ export const ventures: Venture[] = [
   { name: "ClickIT", description: "3D printed fidget toys for schools.", url: "/clickit", status: "In Development" },
   { name: "SmallBiz Hub", description: "Canadian SMB compliance SaaS.", url: "https://smallbizhub.ca", status: "Beta" },
   { name: "IslandPass", description: "Local commerce network for Victoria.", url: "https://islandpass.ca", status: "Active" },
+  { name: "ForgeKit", description: "Distributed maker tooling platform.", url: "/forgekit", status: "Alpha" },
+  { name: "Ledgerly", description: "Lightweight finance ops for startups.", url: "/ledgerly", status: "Beta" },
+  { name: "Grinterra", description: "The GrinVerse digital universe.", url: "/grinterra", icon: "Globe", status: "building" },
 ];

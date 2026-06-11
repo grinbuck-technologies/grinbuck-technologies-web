@@ -51,17 +51,3 @@ export function nearestSlotIndex(px: number, py: number, slots: PinSlot[], board
   });
   return best;
 }
-
-export function createAssignments(cardCount: number): (number | null)[] {
-  const slots = Array<number | null>(PIN_COUNT).fill(null);
-  for (let i = 0; i < cardCount; i++) slots[i] = i;
-  return slots;
-}
-
-export function cardSlotsFromAssignments(assignments: (number | null)[], cardCount: number): (number | null)[] {
-  const result: (number | null)[] = Array(cardCount).fill(null);
-  assignments.forEach((card, slot) => {
-    if (card !== null) result[card] = slot;
-  });
-  return result;
-}

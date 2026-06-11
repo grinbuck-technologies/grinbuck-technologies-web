@@ -20,13 +20,7 @@ export default function PinCard({ venture, rot, index, registerRef, onUnpin }: P
   const ref = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLAnchorElement>(null);
 
-  useGSAP(
-    () => {
-      registerRef(index, ref.current);
-      gsap.set(ref.current, { rotation: rot });
-    },
-    { scope: ref }
-  );
+  useGSAP(() => registerRef(index, ref.current), { scope: ref });
 
   const locked = () => ref.current?.dataset.fallen === "1" || ref.current?.dataset.dragging === "1";
 
@@ -60,7 +54,7 @@ export default function PinCard({ venture, rot, index, registerRef, onUnpin }: P
         width: "clamp(180px, 22vw, 260px)",
         transformOrigin: "50% 0",
         zIndex: 1,
-        willChange: "transform",
+        touchAction: "none",
       }}
     >
       <BrassPin name={venture.name} onUnpin={onUnpin} />
