@@ -82,13 +82,13 @@ export default function PinBoard({ ventures, active, page, totalPages }: Props) 
   const mono: React.CSSProperties = { fontFamily: "var(--font-mono)", color: "var(--color-olive)" };
   const boardStyle: React.CSSProperties = {
     position: "relative", boxSizing: "border-box", width: "88vw", height: "88vh", flexShrink: 0,
-    background: "#C4A882", backgroundImage: CORK_TEXTURE, backgroundBlendMode: "multiply",
-    border: "8px solid #8B6914", borderRadius: 8,
+    background: "var(--color-cork)", backgroundImage: CORK_TEXTURE, backgroundBlendMode: "multiply",
+    border: "8px solid var(--color-cork-border)", borderRadius: 8,
     boxShadow: "inset 0 0 80px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.2)", overflow: "hidden",
   };
 
   return (
-    <div style={{ width: "100%", height: "100%", background: "#2C2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ width: "100%", height: "100%", background: "var(--color-wall)", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div ref={boardRef} suppressHydrationWarning style={boardStyle}>
         <div style={{ position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)", fontFamily: "var(--font-display)", fontSize: "3rem", fontWeight: 700, lineHeight: 1, pointerEvents: "none", zIndex: 0 }}>
           <span style={{ color: "var(--color-ink)" }}>g</span>
