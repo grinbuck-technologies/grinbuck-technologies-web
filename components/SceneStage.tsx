@@ -12,6 +12,9 @@ import { paginate, CARDS_PER_PAGE } from "@/lib/pinboard";
 import { useSceneNavigation } from "@/lib/useSceneNavigation";
 import { animateToScene, type SceneRefs } from "@/lib/sceneTransition";
 
+// Vertical position of the olive divider that sits under the docked wordmark
+const UNDERLINE_TOP = "13vh";
+
 type Scene = { label: string; render: (active: boolean) => ReactNode };
 
 // Scenes are derived automatically: HOME plus one PinBoard scene per page of
@@ -26,7 +29,7 @@ const scenes: Scene[] = [
       <PinBoard ventures={items} active={active} page={pageIndex} totalPages={venturePages.length} />
     ),
   })),
-  { label: "About Us", render: () => null },
+  { label: "ABOUT US", render: () => null },
 ];
 
 const ABOUT_SCENE_INDEX = scenes.length - 1;
@@ -147,7 +150,7 @@ export default function SceneStage({ gateOpen }: Props) {
         aria-hidden="true"
         style={{
           position: "fixed",
-          top: "13vh",
+          top: UNDERLINE_TOP,
           left: "50%",
           width: "min(420px, 60vw)",
           height: 1,

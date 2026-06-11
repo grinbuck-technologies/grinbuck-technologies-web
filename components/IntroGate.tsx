@@ -3,6 +3,8 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import gsap, { EASE_EXIT } from "@/lib/gsap";
 import { REDUCED_MOTION_QUERY, Z_INTRO_GATE } from "@/lib/constants";
 
+const PROGRESS_BAR_FULL_WIDTH = 120;
+
 type Props = { onOpen?: () => void };
 
 export default function IntroGate({ onOpen }: Props) {
@@ -39,7 +41,7 @@ export default function IntroGate({ onOpen }: Props) {
     const tl = gsap.timeline({ onComplete: handleComplete });
 
     // Progress bar fills over 1.5 s
-    tl.to(progressRef.current, { width: 120, duration: 1.5, ease: "none" })
+    tl.to(progressRef.current, { width: PROGRESS_BAR_FULL_WIDTH, duration: 1.5, ease: "none" })
       // Text fades during the 0.8 s hold (first 0.4 s)
       .to(textRef.current, { opacity: 0, duration: 0.4, ease: "power2.in" })
       // 0.4 s later → 0.8 s total hold after bar completes → panels split

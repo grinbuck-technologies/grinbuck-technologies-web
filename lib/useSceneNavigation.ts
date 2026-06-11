@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef, type MutableRefObject } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 type TransitionFn = (target: number, prev: number, direction: number) => Promise<void>;
 
@@ -7,8 +7,6 @@ type Args = {
   enabled: boolean;
   count: number;
   onTransition: TransitionFn;
-  wheelInterceptor?: MutableRefObject<((e: WheelEvent) => boolean) | null>;
-  scrollSceneIndex?: number;
 };
 
 const WHEEL_THRESHOLD = 24;
@@ -21,19 +19,15 @@ const COOLDOWN_MS = 320;
  * cooldown so trackpad/touch momentum can't double-fire. Lenis is left intact —
  * the page is a fixed non-scrolling stage, so there's nothing for it to scroll.
  */
-export function useSceneNavigation({ enabled, count, onTransition, wheelInterceptor, scrollSceneIndex }: Args) {
+export function useSceneNavigation({ enabled, count, onTransition }: Args) {
   const sceneRef = useRef(0);
   const lockRef = useRef(false);
   const enabledRef = useRef(enabled);
   const cbRef = useRef(onTransition);
-  const wheelRef = useRef(wheelInterceptor);
-  const scrollIndexRef = useRef(scrollSceneIndex);
 
   useLayoutEffect(() => {
     enabledRef.current = enabled;
     cbRef.current = onTransition;
-    wheelRef.current = wheelInterceptor;
-    scrollIndexRef.current = scrollSceneIndex;
   });
 
   useEffect(() => {
@@ -53,12 +47,6 @@ export function useSceneNavigation({ enabled, count, onTransition, wheelIntercep
     };
 
     const onWheel = (event: WheelEvent) => {
-      const onScrollScene =
-        scrollIndexRef.current !== undefined && sceneRef.current === scrollIndexRef.current;
-      if (onScrollScene && wheelRef.current?.current) {
-        const handled = wheelRef.current.current(event);
-        if (handled) return;
-      }
       event.preventDefault();
       if (Math.abs(event.deltaY) < WHEEL_THRESHOLD) return;
       trigger(event.deltaY > 0 ? 1 : -1);

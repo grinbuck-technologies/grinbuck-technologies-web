@@ -13,7 +13,9 @@ export type SceneRefs = {
 
 // Docked-header geometry — wordmark shrinks and flies toward the top of scene 2.
 export const DOCK_SCALE = 0.2;
-const dockY = () => -(window.innerHeight * 0.42);
+// 42 % up from viewport center lands the wordmark just below the 13vh underline
+const DOCK_Y_FRACTION = 0.42;
+const dockY = () => -(window.innerHeight * DOCK_Y_FRACTION);
 
 function getSubtitle(stage: HTMLElement | null) {
   const subtitleEl = stage?.querySelector("[data-subtitle]");

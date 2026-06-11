@@ -3,6 +3,8 @@ import { useEffect, useRef } from "react";
 import gsap, { EASE_ENTER } from "@/lib/gsap";
 import { REDUCED_MOTION_QUERY, Z_CURSOR } from "@/lib/constants";
 
+const LINK_PROXIMITY_PX = 80;
+
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const isNear = useRef(false);
@@ -45,14 +47,14 @@ export default function Cursor() {
       xTo(e.clientX);
       yTo(e.clientY);
 
-      // Find closest point on every <a> rect; flag proximity within 80 px
+      // Find closest point on every <a> rect; flag proximity within LINK_PROXIMITY_PX
       const links = document.querySelectorAll<HTMLElement>("a");
       let near = false;
       for (const link of links) {
-        const r  = link.getBoundingClientRect();
-        const cx = Math.max(r.left, Math.min(e.clientX, r.right));
-        const cy = Math.max(r.top,  Math.min(e.clientY, r.bottom));
-        if (Math.hypot(e.clientX - cx, e.clientY - cy) < 80) { near = true; break; }
+        const linkRect = link.getBoundingClientRect();
+        const clampedX = Math.max(linkRect.left, Math.min(e.clientX, linkRect.right));
+        const clampedY = Math.max(linkRect.top,  Math.min(e.clientY, linkRect.bottom));
+        if (Math.hypot(e.clientX - clampedX, e.clientY - clampedY) < LINK_PROXIMITY_PX) { near = true; break; }
       }
 
       if (near !== isNear.current) {

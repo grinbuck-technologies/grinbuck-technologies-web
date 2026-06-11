@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 const SECTORS = ["3D Manufacturing", "SaaS & Software", "Local Commerce", "Digital Infrastructure"] as const;
 
@@ -16,7 +17,6 @@ export default function ClosingScene() {
         background: "var(--color-paper)",
         height: "100vh",
         overflow: "hidden",
-        display: "flex",
         alignItems: "center",
         padding: "clamp(2rem, 4vh, 3rem) clamp(2rem, 5vw, 5rem)",
       }}
@@ -137,7 +137,7 @@ export default function ClosingScene() {
             }}
           >
             <div className="flex flex-col items-center">
-              <img src="/gb.png" alt="Grinbuck" style={{ mixBlendMode: "multiply", width: 80, height: "auto" }} />
+              <Image src="/gb.png" alt="Grinbuck" width={500} height={500} style={{ mixBlendMode: "multiply", width: 80, height: "auto" }} />
               <span
                 style={{
                   fontFamily: "var(--font-mono)",
