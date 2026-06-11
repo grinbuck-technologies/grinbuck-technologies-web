@@ -1,67 +1,124 @@
 "use client";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useGSAP } from "@gsap/react";
+import { useLenis } from "lenis/react";
 import gsap from "@/lib/gsap";
 import Wordmark from "@/components/Wordmark";
-import Ventures from "@/components/Ventures";
+import PinBoard from "@/components/PinBoard";
+import { ventures } from "@/lib/ventures";
+import { paginate, CARDS_PER_PAGE } from "@/lib/pinboard";
 import { useSceneNavigation } from "@/lib/useSceneNavigation";
 import { animateToScene, type SceneRefs } from "@/lib/sceneTransition";
 
+type Scene = { label: string; render: (active: boolean) => ReactNode };
+
+// Scenes are derived automatically: HOME plus one PinBoard scene per page of
+// ventures. Adding a venture (past CARDS_PER_PAGE) spawns a new paginated scene
+// with no other code changes.
+const venturePages = paginate(ventures, CARDS_PER_PAGE);
+const scenes: Scene[] = [
+  { label: "HOME", render: () => null },
+  ...venturePages.map((items, pageIndex) => ({
+    label: pageIndex === 0 ? "OUR VENTURES" : "OUR VENTURES — CONTINUED",
+    render: (active: boolean) => (
+      <PinBoard ventures={items} active={active} page={pageIndex} totalPages={venturePages.length} />
+    ),
+  })),
+];
+
 type Props = { gateOpen: boolean };
 
-// Full-viewport snap-scene stage. Scene 1 (hero) and scene 2 (ventures) are
-// stacked in a 200vh track that displaces by one viewport per gesture. The
-// wordmark lives in a separate fixed layer so it can persist across both scenes.
+// Full-viewport snap-scene stage. Scenes are stacked in a tall track; each
+// gesture runs a curtain wipe that swaps the scene under cover. The wordmark
+// lives in a separate fixed layer so it persists across every scene.
 export default function SceneStage({ gateOpen }: Props) {
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLDivElement>(null);
   const underlineRef = useRef<HTMLDivElement>(null);
+  const leftPanelRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+  const curtainTextRef = useRef<HTMLSpanElement>(null);
+  const [activeScene, setActiveScene] = useState(0);
+  const lenis = useLenis();
 
-  // Lock native scrolling — scenes snap, the page itself never scrolls.
+  // Pause Lenis: we own the wheel for snap-scenes, so smooth-scroll must not
+  // also process wheel input. Restored if the stage ever unmounts.
+  useEffect(() => {
+    if (!lenis) return;
+    lenis.stop();
+    return () => lenis.start();
+  }, [lenis]);
+
+  // Lock native scrolling — keyed to gateOpen so it re-asserts AFTER IntroGate
+  // clears body.overflow on open.
   useEffect(() => {
     const html = document.documentElement;
-    const prevHtml = html.style.overflow;
-    const prevBody = document.body.style.overflow;
     html.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
     return () => {
-      html.style.overflow = prevHtml;
-      document.body.style.overflow = prevBody;
+      html.style.overflow = "";
+      document.body.style.overflow = "";
+      document.body.style.overscrollBehavior = "";
     };
-  }, []);
+  }, [gateOpen]);
 
-  // Initial hidden state for the scene-2 reveal targets.
+  // Initial states: olive divider hidden + curtain panels parked off-screen.
   useGSAP(
     () => {
-      gsap.set("[data-venture-row]", { opacity: 0, yPercent: 60 });
       gsap.set(underlineRef.current, { xPercent: -50, scaleX: 0 });
+      gsap.set(leftPanelRef.current, { xPercent: -100 });
+      gsap.set(rightPanelRef.current, { xPercent: 100 });
     },
     { scope: stageRef }
   );
 
   const onTransition = useCallback((target: number) => {
+    // Flip active scene at gesture start so the incoming scene (e.g. PinBoard)
+    // resets while still hidden behind the closing curtain.
+    setActiveScene(target);
     const refs: SceneRefs = {
       track: trackRef.current,
       wordmark: wordmarkRef.current,
       underline: underlineRef.current,
+      leftPanel: leftPanelRef.current,
+      rightPanel: rightPanelRef.current,
+      curtainText: curtainTextRef.current,
       stage: stageRef.current,
     };
-    return animateToScene(target, refs);
+    return animateToScene(target, refs, scenes.length, scenes[target].label);
   }, []);
 
-  useSceneNavigation({ enabled: gateOpen, count: 2, onTransition });
+  useSceneNavigation({ enabled: gateOpen, count: scenes.length, onTransition });
 
-  const scene: React.CSSProperties = { height: "100vh", width: "100%", background: "var(--color-paper)" };
+  const panel: React.CSSProperties = {
+    position: "fixed",
+    top: 0,
+    width: "50vw",
+    height: "100vh",
+    background: "var(--color-gate)",
+    pointerEvents: "none",
+    willChange: "transform",
+    zIndex: 50,
+  };
 
   return (
     <div ref={stageRef} style={{ position: "fixed", inset: 0, overflow: "hidden", zIndex: 1 }}>
-      {/* Sliding track holds both scenes stacked vertically (200vh total) */}
-      <div ref={trackRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "200vh", willChange: "transform" }}>
-        <section style={scene} aria-label="Intro" />
-        <section style={scene} aria-label="Ventures">
-          <Ventures />
-        </section>
+      {/* Sliding track stacks every scene vertically */}
+      <div
+        ref={trackRef}
+        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: `${scenes.length * 100}vh`, willChange: "transform" }}
+      >
+        {scenes.map((s, i) => (
+          <section
+            key={s.label}
+            aria-label={s.label}
+            style={{ height: "100vh", width: "100%", background: "var(--color-paper)" }}
+          >
+            {s.render(activeScene === i)}
+          </section>
+        ))}
       </div>
 
       {/* Persistent wordmark — fixed center, travels to docked header on transition */}
@@ -79,7 +136,7 @@ export default function SceneStage({ gateOpen }: Props) {
         <Wordmark gateOpen={gateOpen} rootRef={wordmarkRef} />
       </div>
 
-      {/* Olive divider that draws under the docked wordmark in scene 2 */}
+      {/* Olive divider that draws under the docked wordmark */}
       <div
         ref={underlineRef}
         aria-hidden="true"
@@ -95,6 +152,35 @@ export default function SceneStage({ gateOpen }: Props) {
           zIndex: 5,
         }}
       />
+
+      {/* Curtain panels — sweep in to cover the swap, then retract */}
+      <div ref={leftPanelRef} aria-hidden="true" style={{ ...panel, left: 0 }} />
+      <div ref={rightPanelRef} aria-hidden="true" style={{ ...panel, right: 0 }} />
+
+      {/* Seam label shown while the panels are closed (above the panels) */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+          zIndex: 51,
+        }}
+      >
+        <span
+          ref={curtainTextRef}
+          style={{
+            fontFamily: "var(--font-press-start-2p)",
+            color: "var(--color-paper)",
+            fontSize: "1.2rem",
+            letterSpacing: "0.25em",
+            textTransform: "uppercase",
+            opacity: 0,
+          }}
+        />
+      </div>
     </div>
   );
 }
