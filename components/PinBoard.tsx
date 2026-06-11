@@ -90,9 +90,8 @@ export default function PinBoard({ ventures, active, page, totalPages }: Props) 
   return (
     <div style={{ width: "100%", height: "100%", background: "var(--color-wall)", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div ref={boardRef} suppressHydrationWarning style={boardStyle}>
-        <div style={{ position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)", fontFamily: "var(--font-display)", fontSize: "3rem", fontWeight: 700, lineHeight: 1, pointerEvents: "none", zIndex: 0 }}>
-          <span style={{ color: "var(--color-ink)" }}>g</span>
-          <span style={{ color: "var(--color-olive)" }}>b</span>
+        <div style={{ position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)", pointerEvents: "none", zIndex: 0 }}>
+          <img src="/gb.png" alt="Grinbuck" style={{ width: "48px", height: "auto", mixBlendMode: "multiply" }} />
         </div>
         {PIN_SLOTS.map((slot, i) => <PinHole key={i} slot={slot} />)}
         {rotations?.map((rot, i) => (

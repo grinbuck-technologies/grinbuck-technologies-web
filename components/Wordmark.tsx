@@ -90,8 +90,7 @@ export default function Wordmark({ gateOpen, rootRef }: Props) {
         style={{
           fontFamily: "var(--font-mono)",
           fontSize: "0.9rem",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
+          letterSpacing: "0.08em",
           color: "var(--color-ink)",
           opacity: 0,
           visibility: "hidden",

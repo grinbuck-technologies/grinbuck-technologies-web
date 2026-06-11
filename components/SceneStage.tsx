@@ -26,8 +26,10 @@ const scenes: Scene[] = [
       <PinBoard ventures={items} active={active} page={pageIndex} totalPages={venturePages.length} />
     ),
   })),
-  { label: "About Us", render: () => <ClosingScene /> },
+  { label: "About Us", render: () => null },
 ];
+
+const ABOUT_SCENE_INDEX = scenes.length - 1;
 
 type Props = { gateOpen: boolean };
 
@@ -117,9 +119,9 @@ export default function SceneStage({ gateOpen }: Props) {
           <section
             key={s.label}
             aria-label={s.label}
-            style={{ height: "100vh", width: "100%", background: "var(--color-paper)" }}
+            style={{ height: "100vh", width: "100%", background: "var(--color-paper)", overflow: "hidden" }}
           >
-            {s.render(activeScene === i)}
+            {i === ABOUT_SCENE_INDEX ? <ClosingScene /> : s.render(activeScene === i)}
           </section>
         ))}
       </div>
