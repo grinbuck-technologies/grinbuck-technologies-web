@@ -3,16 +3,20 @@
 @theme {
   --color-paper: #FAFAF7;
   --color-ink: #0A0A0A;
-  --color-olive: #6E7A3E;
-  --color-olive-deep: #4F5A2C;
-  --color-olive-mist: #C7CDA8;
+  --color-brand: oklch(0.424 0.112 145.6);
+  /* Lighter brand for text on dark (#0A0A0A) backgrounds — passes WCAG AA 4.5:1 */
+  --color-brand-on-dark: oklch(0.72 0.16 145.6);
   --color-hairline: #ECECE6;
-  --color-gate: #0E0F0C;
-  --color-cork: #C4A882;
-  --color-cork-border: #8B6914;
-  --color-pin: #B8963E;
-  --color-wall: #2C2416;
+  --color-subhead: #3A3A38;   /* secondary text on light bg */
+  --color-muted: #9A9A96;     /* muted text on dark bg — passes WCAG AA on #0A0A0A */
   --shadow-lift: 0 18px 40px -24px rgba(10,10,10,0.45);
+}
+
+/* Dark mode: richer brand green */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-brand: oklch(0.553 0.13 145.6);
+  }
 }
 
 /* Expose GeistMono under the canonical --font-mono variable */
@@ -20,24 +24,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-display), sans-serif;
-}
-
-/* Suppress native cursor on fine-pointer devices when custom cursor is active */
-.js-cursor,
-.js-cursor * {
-  cursor: none !important;
-}
-
-/* Olive focus ring for keyboard / switch navigation */
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--color-olive);
-  outline-offset: 3px;
-  border-radius: 2px;
 }
 
 /* Fixed grain overlay — feTurbulence fractal noise at 3.5% opacity */
@@ -50,4 +44,38 @@ body::before {
   mix-blend-mode: multiply;
   pointer-events: none;
   z-index: 9999;
+}
+
+/* Brand focus ring for keyboard / switch navigation */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── Interactive element hover states ── */
+
+.nav-link {
+  transition: opacity 0.15s ease;
+}
+.nav-link:hover {
+  opacity: 1 !important;
+}
+
+.btn-cta {
+  transition: filter 0.18s ease;
+}
+.btn-cta:hover {
+  filter: brightness(1.12);
+}
+
+.footer-link {
+  transition: opacity 0.15s ease, text-decoration-color 0.15s ease;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+}
+.footer-link:hover {
+  opacity: 0.8 !important;
+  text-decoration-color: currentColor;
 }

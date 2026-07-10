@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { GeistMono } from "geist/font/mono";
-import { Press_Start_2P } from "next/font/google";
 import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
@@ -12,25 +11,34 @@ const display = localFont({
   display: "swap",
 });
 
-const pressStart2P = Press_Start_2P({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-press-start-2p",
-});
-
 export const metadata: Metadata = {
-  title: "Grinbuck Technologies",
-  description: "The GrinVerse — a portfolio of ventures by Grinbuck Technologies.",
+  metadataBase: new URL("https://grinbuck.com"),
+  title: "Grinbuck Technologies Inc.",
+  description:
+    "A Victoria, BC-based holding company building and operating independent businesses for the long term.",
+  openGraph: {
+    title: "Grinbuck Technologies Inc.",
+    description:
+      "A Victoria, BC-based holding company building and operating independent businesses for the long term.",
+    url: "https://grinbuck.com",
+    siteName: "Grinbuck Technologies Inc.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Grinbuck Technologies Inc.",
+    description:
+      "A Victoria, BC-based holding company building and operating independent businesses for the long term.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${display.variable} ${GeistMono.variable} ${pressStart2P.variable}`}
-    >
+    <html lang="en" className={`${display.variable} ${GeistMono.variable}`}>
       <body>
         <SmoothScroll>{children}</SmoothScroll>
       </body>
