@@ -2,6 +2,16 @@ export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 export const Z_NAV = 10;
 
+// Centered fixed-width content column — the standard pattern for a
+// readable column with breathing room on wide monitors. Applied via
+// maxWidth + margin: "0 auto" on each section's inner content wrapper.
+export const SECTION_MAX_WIDTH = "1100px";
+
+// Horizontal gutter used alongside SECTION_MAX_WIDTH above, so the column
+// still has safe padding on small/medium screens (where it exceeds the
+// column width and the cap doesn't yet apply).
+export const SECTION_PADDING_X = "clamp(2rem, 6vw, 8rem)";
+
 export const CONTACT_EMAIL = "hello@grinbuck.com";
 
 // Nav dimensions
