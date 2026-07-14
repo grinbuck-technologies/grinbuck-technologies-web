@@ -10,6 +10,16 @@
   --color-subhead: #3A3A38;   /* secondary text on light bg */
   --color-muted: #9A9A96;     /* muted text on dark bg — passes WCAG AA on #0A0A0A */
   --shadow-lift: 0 18px 40px -24px rgba(10,10,10,0.45);
+
+  /* ClickIT's secondary accent — warm terracotta paired with brand green,
+     for visual differentiation from Grinbuck's corporate palette. Same
+     lightness (0.42) as --color-brand so it behaves the same for contrast
+     (dark enough for white text on top). Used only on the ClickIT page. */
+  --color-clickit-accent: oklch(0.42 0.14 55);
+  /* Lighter accent for text on dark (#0A0A0A) backgrounds, same relationship
+     as --color-brand-on-dark is to --color-brand. */
+  --color-clickit-accent-on-dark: oklch(0.75 0.13 55);
+  --color-clickit-tint: oklch(0.96 0.025 55);
 }
 
 /* Dark mode: richer brand green */
@@ -24,9 +34,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* No `scroll-behavior: smooth` here — Lenis owns smooth scrolling via
+   explicit JS calls (see Nav.tsx, SmoothScroll.tsx). Native CSS smooth
+   scrolling competes with Lenis: it animates the initial hash-anchor jump,
+   and Lenis's one-time scroll snapshot at construction can catch that
+   animation mid-flight and freeze scroll there, undershooting the real
+   target — worse the further down the page the target is. */
 
 body {
   background: var(--color-paper);
