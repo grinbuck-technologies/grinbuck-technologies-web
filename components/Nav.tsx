@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useLenis } from "lenis/react";
 import {
   Z_NAV,
@@ -10,12 +11,44 @@ import {
   SCROLL_DURATION,
 } from "@/lib/constants";
 
-const NAV_LINKS = [
-  { label: "Ventures", id: "ventures" },
-  { label: "About", id: "about" },
-] as const;
+// Default homepage nav links. "Ventures" stays an in-page anchor since that
+// section lives fully on the homepage. "About" is a real route — the
+// homepage's #about section is now just a teaser with its own link, not
+// what this nav item targets.
+type NavLinkItem =
+  | { label: string; kind: "anchor"; id: string }
+  | { label: string; kind: "route"; href: string };
 
-export default function Nav() {
+const NAV_LINKS: NavLinkItem[] = [
+  { label: "Ventures", kind: "anchor", id: "ventures" },
+  { label: "About", kind: "route", href: "/about" },
+];
+
+type NavProps = {
+  // Brand mark target. "#hero" (default) scroll-snaps to the top of the
+  // current page via Lenis, matching the homepage. Anything else (e.g. "/")
+  // is a plain route link, for pages that live outside the homepage's
+  // anchor sections.
+  homeHref?: string;
+  // Overrides the default in-page #ventures/#about anchors with plain route
+  // links, for pages that don't share those homepage sections.
+  links?: { label: string; href: string }[];
+};
+
+/**
+ * Sticky site header shared by every page: brand mark, nav links, and a
+ * mailto Contact link. Gains a drop shadow once the page scrolls past
+ * `NAV_SHADOW_THRESHOLD`.
+ *
+ * @param homeHref - Brand mark target. `"#hero"` (default) scroll-snaps to
+ *   the top of the current page via Lenis, matching the homepage. Any other
+ *   value (e.g. `"/"`) renders a plain route `<Link>`, for pages outside the
+ *   homepage's anchor sections.
+ * @param links - Overrides the default homepage nav items (`Ventures`
+ *   anchor, `About` route) with plain route links, for pages that don't
+ *   share the homepage's `#ventures` section.
+ */
+export function Nav({ homeHref = "#hero", links }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const lenis = useLenis();
 
@@ -64,33 +97,66 @@ export default function Nav() {
         transition: "box-shadow 0.25s ease",
       }}
     >
-      <a
-        href="#hero"
-        onClick={goto("hero")}
-        style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "1.125rem",
-          fontWeight: 600,
-          letterSpacing: "-0.03em",
-          textDecoration: "none",
-        }}
-      >
-        <span style={{ color: "var(--color-ink)" }}>grin</span>
-        <span style={{ color: "var(--color-brand)" }}>buck</span>
-      </a>
+      {homeHref.startsWith("#") ? (
+        <a
+          href={homeHref}
+          onClick={goto(homeHref.slice(1))}
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "1.125rem",
+            fontWeight: 600,
+            letterSpacing: "-0.03em",
+            textDecoration: "none",
+          }}
+        >
+          <span style={{ color: "var(--color-ink)" }}>grin</span>
+          <span style={{ color: "var(--color-brand)" }}>buck</span>
+        </a>
+      ) : (
+        <Link
+          href={homeHref}
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "1.125rem",
+            fontWeight: 600,
+            letterSpacing: "-0.03em",
+            textDecoration: "none",
+          }}
+        >
+          <span style={{ color: "var(--color-ink)" }}>grin</span>
+          <span style={{ color: "var(--color-brand)" }}>buck</span>
+        </Link>
+      )}
 
       <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-        {NAV_LINKS.map(({ label, id }) => (
-          <a
-            key={id}
-            href={`#${id}`}
-            onClick={goto(id)}
-            className="nav-link"
-            style={linkStyle}
-          >
-            {label}
-          </a>
-        ))}
+        {links
+          ? links.map(({ label, href }) => (
+              <Link key={href} href={href} className="nav-link" style={linkStyle}>
+                {label}
+              </Link>
+            ))
+          : NAV_LINKS.map((item) =>
+              item.kind === "anchor" ? (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={goto(item.id)}
+                  className="nav-link"
+                  style={linkStyle}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="nav-link"
+                  style={linkStyle}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
         <a
           href={`mailto:${CONTACT_EMAIL}`}
           className="nav-link"
