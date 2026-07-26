@@ -343,6 +343,9 @@ export function HomeClient() {
                 >
                   02 / Fintech
                 </div>
+                {/* Same two-color wordmark treatment as "grinbuck": the
+                    first syllable stays ink, the second becomes the brand
+                    accent. */}
                 <h2
                   style={{
                     fontFamily: "var(--font-noto-sans)",
@@ -351,10 +354,14 @@ export function HomeClient() {
                     letterSpacing: "-0.02em",
                     lineHeight: 1,
                     margin: "0 0 20px",
-                    color: "var(--color-home-ink)",
                   }}
                 >
-                  {tabmonk.name}
+                  <span style={{ color: "var(--color-home-ink)" }}>
+                    {tabmonk.name.slice(0, 3)}
+                  </span>
+                  <span style={{ color: "var(--color-home-accent)" }}>
+                    {tabmonk.name.slice(3)}
+                  </span>
                 </h2>
                 <p
                   style={{
