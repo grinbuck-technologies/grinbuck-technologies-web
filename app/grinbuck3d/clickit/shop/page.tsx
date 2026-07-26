@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "ClickIT Shop — Coming soon",
+  title: "ClickIT Shop: Coming soon",
   description: "The ClickIT shop is coming soon.",
 };
 
-/** `/clickit/shop` route — placeholder "coming soon" page for the ClickIT shop. */
+/** `/grinbuck3d/clickit/shop` route — placeholder "coming soon" page for the ClickIT shop. */
 export default function ClickitShopPage() {
   return (
     <div>
       <Nav
         homeHref="/"
         links={[
-          { label: "ClickIT", href: "/clickit" },
+          { label: "ClickIT", href: "/grinbuck3d/clickit" },
           { label: "Home", href: "/" },
         ]}
       />
@@ -52,7 +52,7 @@ export default function ClickitShopPage() {
             margin: 0,
           }}
         >
-          The ClickIT shop isn&apos;t open yet — check back soon.
+          The ClickIT shop isn&apos;t open yet. Check back soon.
         </p>
       </main>
     </div>

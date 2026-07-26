@@ -11,6 +11,18 @@ const CSP = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      // ClickIT moved under the Grinbuck3D manufacturing venture.
+      // The `*` modifier matches zero or more segments, covering both
+      // "/clickit" itself and "/clickit/shop".
+      {
+        source: "/clickit/:path*",
+        destination: "/grinbuck3d/clickit/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

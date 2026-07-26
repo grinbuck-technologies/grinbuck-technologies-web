@@ -10,9 +10,16 @@ export type Venture = {
 
 export const ventures: Venture[] = [
   {
+    name: "Grinbuck3D",
+    description:
+      "Additive manufacturing and 3D-print production for clients who need parts fast, precise, and built to spec. We take every job from prototype to production run.",
+    url: "/grinbuck3d",
+    status: "Live",
+  },
+  {
     name: "tabMonk",
     description:
-      "tabMonk helps you track expenses, send invoices, and stay on top of deadlines. Built for personal budgets, rental properties, and small businesses alike.",
+      "tabMonk tracks income and expenses, sends invoices, and keeps you ready for tax season. Built for personal budgets and small businesses alike.",
     url: "https://www.tabmonk.com",
     status: "Live",
     logo: "/tabmonk-wordmark.png",
@@ -20,16 +27,9 @@ export const ventures: Venture[] = [
   {
     name: "QP Quintet",
     description:
-      "Import-export operations connecting East India to British Columbia.",
+      "QP Quintet trades both ways between India and Canada, importing and exporting goods across the Pacific.",
     url: "https://qpquintet.ca",
     status: "In Development",
     logo: "/qp-canada-expanded.svg",
-  },
-  {
-    name: "ClickIT",
-    description:
-      "3D-printed tactical clickers built to help with focus and ADHD management.",
-    url: "/clickit",
-    status: "In Development",
   },
 ];

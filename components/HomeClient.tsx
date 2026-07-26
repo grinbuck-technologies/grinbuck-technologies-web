@@ -1,15 +1,16 @@
 "use client";
 import { useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
+import { useLenis } from "lenis/react";
 import { gsap, ScrollTrigger, EASE_ENTER } from "@/lib/gsap";
 import {
   REDUCED_MOTION_QUERY,
   CONTACT_EMAIL,
+  SITE_LEGAL_NAME,
   NAV_SCROLL_OFFSET,
+  SCROLL_DURATION,
   SECTION_MAX_WIDTH,
-  SECTION_PADDING_X,
   ANIM_DURATION_ENTER,
   ANIM_DURATION_REVEAL,
   ANIM_STAGGER,
@@ -17,45 +18,37 @@ import {
   ANIM_Y_HERO,
   ANIM_Y_REVEAL,
 } from "@/lib/constants";
-import { ventures, type Venture } from "@/lib/ventures";
+import { ventures } from "@/lib/ventures";
+import { EYEBROW_STYLE } from "@/lib/typography";
 import { Nav } from "@/components/Nav";
+import { BeatStack } from "@/components/BeatStack";
+import { BambuLabP1SPrinter, FinanceGrowth, TradeLoop } from "@/components/illustrations";
 
-// Internal routes that actually resolve to a page. A venture's URL that
-// starts with "/" but isn't listed here would 404, so its CTA is suppressed.
-const LIVE_INTERNAL_ROUTES = new Set<string>(["/", "/clickit"]);
+const grinbuck3d = ventures.find((v) => v.name === "Grinbuck3D")!;
+const tabmonk = ventures.find((v) => v.name === "tabMonk")!;
+const qpQuintet = ventures.find((v) => v.name === "QP Quintet")!;
 
-function ventureCtaKind(venture: Venture): "external" | "internal" | "none" {
-  if (!venture.url.startsWith("/")) return "external";
-  return LIVE_INTERNAL_ROUTES.has(venture.url) ? "internal" : "none";
-}
-
-// Header zone all cards share, so logo chips and text headings start/end
-// at the same y regardless of which a given venture has.
-const VENTURE_HEADER_HEIGHT = "80px";
-
-// Render size for each logo, derived from its actual file's aspect ratio —
-// not copy-pasted from another venture's dimensions.
-const LOGO_DIMENSIONS: Record<string, { width: number; height: number; hasOwnBackground: boolean }> = {
-  // tabmonk-wordmark.png: flat wordmark, transparent background, ~4:1 source ratio.
-  "/tabmonk-wordmark.png": { width: 200, height: 50, hasOwnBackground: false },
-  // qp-canada-expanded.svg: viewBox 0 0 520 130 (exactly 4:1), no <rect> background — transparent.
-  "/qp-canada-expanded.svg": { width: 200, height: 50, hasOwnBackground: false },
-};
+const HOME_SECTION_PADDING_X = "5vw";
 
 const HERO_SUBHEAD =
-  "We build and operate companies across manufacturing, software, and commerce — each run independently, for the long term.";
+  "Grinbuck Technologies builds hardware, software, and the trade routes between them, out of Victoria, BC.";
 
-const ABOUT_TEXT =
-  "Grinbuck Technologies is a Victoria, BC-based holding company. We acquire, build, and operate independent businesses for the long term — giving each the resources of a larger organization and the autonomy to run on its own terms.";
+const ABOUT_HEADING = "Independent ventures. One way of building.";
+
+const ABOUT_TEXT_LINES = [
+  "Grinbuck Technologies is based in Victoria, BC. We build hardware, software, and the trade routes between them.",
+  "Each venture runs on its own, with its own product, team, and customers. What ties them together is how we build it: fast, direct, and without excuses.",
+];
 
 /**
- * Client-rendered content for the Grinbuck homepage: hero, Ventures
- * (portfolio grid sourced from `lib/ventures`), and About sections, plus
+ * Client-rendered content for the Grinbuck homepage: hero, three bespoke
+ * venture bands (Grinbuck3D, tabMonk, QP Quintet), and an About teaser, plus
  * GSAP scroll-reveal animations. Rendered by the thin server component at
  * `app/page.tsx`.
  */
 export function HomeClient() {
   const pageRef = useRef<HTMLDivElement>(null);
+  const lenis = useLenis();
 
   useGSAP(
     () => {
@@ -95,8 +88,19 @@ export function HomeClient() {
     { scope: pageRef }
   );
 
+  const scrollToVentures = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    lenis?.scrollTo("#ventures", {
+      duration: SCROLL_DURATION,
+      offset: -NAV_SCROLL_OFFSET,
+    });
+  };
+
   return (
-    <div ref={pageRef}>
+    <div
+      ref={pageRef}
+      style={{ background: "var(--color-home-paper)", overflowX: "hidden" }}
+    >
       <Nav />
 
       <main>
@@ -104,374 +108,513 @@ export function HomeClient() {
         <section
           id="hero"
           style={{
-            minHeight: "90vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            padding: "clamp(5rem, 12vh, 10rem) clamp(1.5rem, 4vw, 4rem)",
-            background: "var(--color-paper)",
+            padding: `8vh ${HOME_SECTION_PADDING_X} 12vh`,
+            maxWidth: "1400px",
+            margin: "0 auto",
           }}
         >
-          <span
+          <div
             className="js-hero"
             style={{
-              display: "block",
-              fontFamily: "var(--font-display)",
-              fontSize: "0.6875rem",
-              fontWeight: 600,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--color-brand)",
-              marginBottom: "1.5rem",
+              ...EYEBROW_STYLE,
+              color: "var(--color-home-eyebrow)",
+              marginBottom: "28px",
             }}
           >
-            Grinbuck Technologies Inc.
-          </span>
+            {SITE_LEGAL_NAME} &nbsp;&middot;&nbsp; Victoria, BC
+          </div>
           <h1
             className="js-hero"
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-              fontWeight: 500,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.1,
-              color: "var(--color-ink)",
-              maxWidth: "820px",
-              margin: "0 0 1.5rem",
+              fontFamily: "var(--font-noto-sans)",
+              fontSize: "clamp(3rem, 9vw, 8rem)",
+              lineHeight: 0.95,
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
+              color: "var(--color-home-ink)",
+              margin: 0,
             }}
           >
-            Independent businesses.<br />
-            One operating philosophy.
+            Serious Tech.
+            <br />
+            <span style={{ color: "var(--color-home-accent)" }}>
+              Serious Fun.
+            </span>
           </h1>
           <p
             className="js-hero"
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(1rem, 1.5vw, 1.25rem)",
+              fontFamily: "var(--font-noto-sans)",
+              fontSize: "clamp(1.1rem, 2vw, 1.5rem)",
               fontWeight: 400,
-              lineHeight: 1.65,
-              color: "var(--color-subhead)",
-              maxWidth: "500px",
-              margin: 0,
+              lineHeight: 1.5,
+              color: "#3a3833",
+              maxWidth: "620px",
+              margin: "40px 0 0",
             }}
           >
             {HERO_SUBHEAD}
           </p>
+          <div className="js-hero" style={{ marginTop: "48px" }}>
+            <a
+              href="#ventures"
+              onClick={scrollToVentures}
+              className="home-hero-cta"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "var(--color-home-ink)",
+                color: "white",
+                padding: "16px 28px",
+                borderRadius: "100px",
+                fontFamily: "var(--font-noto-sans)",
+                fontWeight: 700,
+                fontSize: "15px",
+                textDecoration: "none",
+              }}
+            >
+              See the ventures &rarr;
+            </a>
+          </div>
         </section>
 
         {/* ── Ventures ── */}
-        <section
-          id="ventures"
-          style={{
-            background: "var(--color-ink)",
-            padding: `clamp(3rem, 6vh, 4.5rem) ${SECTION_PADDING_X} clamp(5rem, 10vh, 8rem)`,
-            scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div style={{ maxWidth: SECTION_MAX_WIDTH, width: "100%" }}>
-            <div style={{ marginBottom: "4.5rem", textAlign: "center" }}>
-              <h2
-                className="js-reveal"
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(2rem, 4vw, 3rem)",
-                  fontWeight: 600,
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1.15,
-                  color: "var(--color-paper)",
-                  margin: "0 0 0.75rem",
-                }}
-              >
-                Portfolio
-              </h2>
-              <p
-                className="js-reveal"
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "1.125rem",
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  color: "var(--color-muted)",
-                  margin: 0,
-                }}
-              >
-                Independent businesses we build and operate.
-              </p>
-            </div>
-
+        <section id="ventures" style={{ scrollMarginTop: `${NAV_SCROLL_OFFSET}px` }}>
+          <div
+            className="js-reveal"
+            style={{
+              padding: `0 ${HOME_SECTION_PADDING_X}`,
+              maxWidth: "1400px",
+              margin: "0 auto 40px",
+            }}
+          >
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-                gap: "3.5rem clamp(2rem, 4vw, 4rem)",
-                justifyContent: "center",
+                ...EYEBROW_STYLE,
+                color: "var(--color-home-eyebrow)",
+                borderTop: "1px solid var(--color-home-hairline)",
+                paddingTop: "24px",
               }}
             >
-              {ventures.map((venture, i) => {
-                const cta = ventureCtaKind(venture);
-                const isTrailingOdd =
-                  ventures.length % 2 === 1 && i === ventures.length - 1;
-                const logoDims = venture.logo
-                  ? LOGO_DIMENSIONS[venture.logo]
-                  : undefined;
-                return (
-                  <div
-                    key={venture.name}
-                    className="venture-card js-reveal"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      ...(isTrailingOdd
-                        ? {
-                            gridColumn: "1 / -1",
-                            justifySelf: "center",
-                            maxWidth: "480px",
-                            width: "100%",
-                          }
-                        : {}),
-                    }}
-                  >
-                    {/* Header zone: fixed height so every card's name/logo
-                        starts and ends at the same y regardless of content. */}
-                    <div
-                      style={{
-                        minHeight: VENTURE_HEADER_HEIGHT,
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "1.25rem",
-                      }}
-                    >
-                      {venture.logo && logoDims ? (
-                        logoDims.hasOwnBackground ? (
-                          <Image
-                            src={venture.logo}
-                            alt={venture.name}
-                            width={logoDims.width}
-                            height={logoDims.height}
-                            quality={90}
-                            style={{ display: "block" }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              display: "inline-block",
-                              background: "var(--color-paper)",
-                              borderRadius: "12px",
-                              padding: "0.75rem 1.25rem",
-                            }}
-                          >
-                            <Image
-                              src={venture.logo}
-                              alt={venture.name}
-                              width={logoDims.width}
-                              height={logoDims.height}
-                              quality={90}
-                              style={{ display: "block" }}
-                            />
-                          </div>
-                        )
-                      ) : (
-                        <h3
-                          style={{
-                            fontFamily: "var(--font-display)",
-                            fontSize: "1.25rem",
-                            fontWeight: 600,
-                            letterSpacing: "-0.01em",
-                            color: "var(--color-paper)",
-                            margin: 0,
-                          }}
-                        >
-                          {venture.name}
-                        </h3>
-                      )}
-                    </div>
-
-                    {/* Description zone: clamped to 3 lines so length differences
-                        don't push the footer to different heights. */}
-                    <p
-                      style={{
-                        fontFamily: "var(--font-display)",
-                        fontSize: "1.0625rem",
-                        fontWeight: 400,
-                        lineHeight: 1.65,
-                        color: "var(--color-muted)",
-                        maxWidth: "480px",
-                        margin: "0 0 1.25rem",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {venture.description}
-                    </p>
-
-                    {/* Footer zone: pinned to the bottom of the card so status
-                        + CTA align across cards sharing a grid row. */}
-                    <div style={{ marginTop: "auto" }}>
-                      <span
-                        style={{
-                          display: "block",
-                          fontFamily: "var(--font-display)",
-                          fontSize: "0.75rem",
-                          fontWeight: 600,
-                          letterSpacing: "0.08em",
-                          textTransform: "uppercase",
-                          color:
-                            venture.status === "Live"
-                              ? "var(--color-brand-on-dark)"
-                              : "var(--color-muted)",
-                          marginBottom: cta === "none" ? 0 : "1.5rem",
-                        }}
-                      >
-                        {venture.status}
-                      </span>
-
-                      {cta === "external" && (
-                        <a
-                          className="btn-cta"
-                          href={venture.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                            padding: "0.75rem 1.75rem",
-                            background: "var(--color-brand)",
-                            color: "var(--color-paper)",
-                            fontFamily: "var(--font-display)",
-                            fontSize: "0.9375rem",
-                            fontWeight: 500,
-                            letterSpacing: "-0.01em",
-                            textDecoration: "none",
-                            borderRadius: "6px",
-                          }}
-                        >
-                          Visit {venture.name} →
-                        </a>
-                      )}
-
-                      {cta === "internal" && (
-                        <Link
-                          className="btn-cta"
-                          href={venture.url}
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                            padding: "0.75rem 1.75rem",
-                            background: "var(--color-brand)",
-                            color: "var(--color-paper)",
-                            fontFamily: "var(--font-display)",
-                            fontSize: "0.9375rem",
-                            fontWeight: 500,
-                            letterSpacing: "-0.01em",
-                            textDecoration: "none",
-                            borderRadius: "6px",
-                          }}
-                        >
-                          Visit {venture.name} →
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+              Three Ventures. One Bet on Building.
             </div>
           </div>
+
+          {/* Venture 1: Grinbuck3D — manufacturing */}
+          <Link
+            href={grinbuck3d.url}
+            className="js-reveal home-band-manufacturing"
+            style={{
+              display: "block",
+              background: "var(--color-home-ink)",
+              color: "white",
+              padding: `8vh ${HOME_SECTION_PADDING_X}`,
+              marginBottom: "2px",
+            }}
+          >
+            <div
+              className="two-col-grid"
+              style={{
+                maxWidth: "1400px",
+                margin: "0 auto",
+                display: "grid",
+                gridTemplateColumns: "1.2fr 1fr",
+                gap: "60px",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    ...EYEBROW_STYLE,
+                    color: "#8a8880",
+                    marginBottom: "16px",
+                  }}
+                >
+                  01 / Manufacturing
+                </div>
+                <h2
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontSize: "clamp(2.6rem, 6vw, 4.8rem)",
+                    fontWeight: 800,
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1,
+                    margin: "0 0 20px",
+                  }}
+                >
+                  {grinbuck3d.name}
+                </h2>
+                <p
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 400,
+                    fontSize: "17px",
+                    color: "#c9c6bd",
+                    maxWidth: "440px",
+                    lineHeight: 1.55,
+                    margin: "0 0 10px",
+                  }}
+                >
+                  {grinbuck3d.description}
+                </p>
+                <p
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontWeight: 400,
+                    fontSize: "13px",
+                    color: "#8a8880",
+                    margin: 0,
+                  }}
+                >
+                  A real production floor. In-house printing and assembly, built in Victoria, BC.
+                </p>
+              </div>
+              <BambuLabP1SPrinter
+                width="100%"
+                height="auto"
+                color="#F6F7F7"
+                strokeWidth={2.5}
+              />
+            </div>
+            <div
+              style={{
+                maxWidth: "1400px",
+                margin: "32px auto 0",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                Visit {grinbuck3d.name} &rarr;
+              </span>
+            </div>
+          </Link>
+
+          {/* Venture 2: tabMonk — finance */}
+          <a
+            href={tabmonk.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="js-reveal home-band-tabmonk"
+            style={{
+              display: "block",
+              background: "var(--color-brand-tint)",
+              padding: `8vh ${HOME_SECTION_PADDING_X}`,
+              marginBottom: "2px",
+            }}
+          >
+            <div
+              className="two-col-grid"
+              style={{
+                maxWidth: "1400px",
+                margin: "0 auto",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "60px",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    ...EYEBROW_STYLE,
+                    color: "#6f7568",
+                    marginBottom: "16px",
+                  }}
+                >
+                  02 / Fintech
+                </div>
+                <h2
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontSize: "clamp(2.6rem, 6vw, 4.8rem)",
+                    fontWeight: 800,
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1,
+                    margin: "0 0 20px",
+                    color: "var(--color-home-ink)",
+                  }}
+                >
+                  {tabmonk.name}
+                </h2>
+                <p
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 400,
+                    fontSize: "17px",
+                    color: "#4a4d47",
+                    maxWidth: "440px",
+                    lineHeight: 1.55,
+                    margin: "0 0 20px",
+                  }}
+                >
+                  {tabmonk.description}
+                </p>
+                <div
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    color: "var(--color-home-ink)",
+                  }}
+                >
+                  Visit {tabmonk.name} &rarr;
+                </div>
+              </div>
+              <FinanceGrowth
+                width="100%"
+                height="auto"
+                color="var(--color-home-ink)"
+                strokeWidth={2.5}
+              />
+            </div>
+          </a>
+
+          {/* Venture 3: QP Quintet — trade, two-way */}
+          <a
+            href={qpQuintet.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="js-reveal home-band-qp"
+            style={{
+              display: "block",
+              background: "var(--color-home-neutral-tint)",
+              padding: `8vh ${HOME_SECTION_PADDING_X}`,
+              marginBottom: "2px",
+            }}
+          >
+            <div
+              className="two-col-grid"
+              style={{
+                maxWidth: "1400px",
+                margin: "0 auto",
+                display: "grid",
+                gridTemplateColumns: "1.2fr 1fr",
+                gap: "60px",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    ...EYEBROW_STYLE,
+                    color: "#8a7a5c",
+                    marginBottom: "16px",
+                  }}
+                >
+                  03 / International Trade
+                </div>
+                <h2
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontSize: "clamp(2.6rem, 6vw, 4.8rem)",
+                    fontWeight: 800,
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1,
+                    margin: "0 0 20px",
+                    color: "var(--color-home-ink)",
+                  }}
+                >
+                  {qpQuintet.name}
+                </h2>
+                <p
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 400,
+                    fontSize: "17px",
+                    color: "#5a5142",
+                    maxWidth: "440px",
+                    lineHeight: 1.55,
+                    margin: "0 0 20px",
+                  }}
+                >
+                  {qpQuintet.description}
+                </p>
+                <div
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    color: "var(--color-home-ink)",
+                  }}
+                >
+                  Visit {qpQuintet.name} &rarr;
+                </div>
+              </div>
+              <TradeLoop
+                width="100%"
+                height="auto"
+                color="#8a7a5c"
+                strokeWidth={2.5}
+              />
+            </div>
+          </a>
         </section>
 
         {/* ── About ── */}
         <section
           id="about"
           style={{
-            padding: "clamp(5rem, 10vh, 8rem) clamp(1.5rem, 4vw, 4rem)",
-            background: "var(--color-paper)",
-            textAlign: "center",
+            padding: "12vh 5vw",
+            maxWidth: "1400px",
+            margin: "0 auto",
             scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
           }}
         >
           <div
-            aria-hidden="true"
-            className="js-reveal"
+            className="js-reveal two-col-grid"
             style={{
-              width: "40px",
-              height: "2px",
-              background: "var(--color-brand)",
-              margin: "0 auto 2.5rem",
-            }}
-          />
-          <p
-            className="js-reveal"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(1rem, 1.5vw, 1.25rem)",
-              fontWeight: 400,
-              lineHeight: 1.7,
-              color: "var(--color-ink)",
-              maxWidth: "640px",
-              margin: "0 auto",
+              display: "grid",
+              gridTemplateColumns: "1fr 1.4fr",
+              gap: "60px",
             }}
           >
-            {ABOUT_TEXT}
-          </p>
-          <Link
-            href="/about"
-            className="footer-link js-reveal"
-            style={{
-              display: "inline-block",
-              marginTop: "2rem",
-              fontFamily: "var(--font-display)",
-              fontSize: "0.9375rem",
-              fontWeight: 500,
-              color: "var(--color-brand)",
-              textDecoration: "none",
-            }}
-          >
-            More about us →
-          </Link>
+            <div
+              style={{
+                ...EYEBROW_STYLE,
+                color: "var(--color-home-eyebrow)",
+              }}
+            >
+              About Grinbuck
+            </div>
+            <div>
+              <h3
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontSize: "clamp(1.8rem, 3.2vw, 2.8rem)",
+                  fontWeight: 800,
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.15,
+                  color: "var(--color-home-ink)",
+                  margin: "0 0 24px",
+                }}
+              >
+                {ABOUT_HEADING}
+              </h3>
+              <div style={{ marginBottom: "1.75rem" }}>
+                <BeatStack
+                  beats={ABOUT_TEXT_LINES}
+                  gap="14px"
+                  paragraphStyle={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 400,
+                    fontSize: "18px",
+                    color: "#4a4740",
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}
+                />
+              </div>
+              <Link
+                href="/about"
+                className="home-accent-link"
+                style={{
+                  display: "inline-block",
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  color: "var(--color-home-ink)",
+                  textDecoration: "none",
+                }}
+              >
+                More about us &rarr;
+              </Link>
+            </div>
+          </div>
         </section>
       </main>
 
-      {/* ── Footer ── */}
+      {/* ── FOOTER ── */}
       <footer
+        id="contact"
         style={{
-          borderTop: "1px solid var(--color-hairline)",
-          padding: "2rem clamp(1.5rem, 4vw, 4rem)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          background: "var(--color-paper)",
+          borderTop: "1px solid var(--color-home-hairline)",
+          padding: `6vh ${HOME_SECTION_PADDING_X} 5vh`,
+          scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
         }}
       >
-        <span
+        <div
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "0.8125rem",
-            color: "var(--color-ink)",
-            opacity: 0.65,
+            maxWidth: SECTION_MAX_WIDTH,
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            flexWrap: "wrap",
+            gap: "32px",
           }}
         >
-          © {new Date().getFullYear()} Grinbuck Technologies Inc.
-        </span>
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
-          className="footer-link"
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "0.8125rem",
-            color: "var(--color-ink)",
-            textDecoration: "none",
-            opacity: 0.65,
-          }}
-        >
-          {CONTACT_EMAIL}
-        </a>
+          <div>
+            <div
+              style={{
+                fontFamily: "var(--font-noto-sans)",
+                fontSize: "22px",
+                fontWeight: 800,
+                letterSpacing: "-0.02em",
+                color: "var(--color-home-ink)",
+                marginBottom: "8px",
+              }}
+            >
+              GRINBUCK
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-noto-sans)",
+                fontWeight: 400,
+                fontSize: "14px",
+                color: "#8a8880",
+              }}
+            >
+              Victoria, British Columbia &middot; {CONTACT_EMAIL}
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "32px",
+              fontFamily: "var(--font-noto-sans)",
+              fontSize: "14px",
+              fontWeight: 700,
+            }}
+          >
+            <Link
+              href={grinbuck3d.url}
+              className="home-accent-link"
+              style={{ color: "var(--color-home-ink)" }}
+            >
+              {grinbuck3d.name}
+            </Link>
+            <a
+              href={tabmonk.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="home-accent-link"
+              style={{ color: "var(--color-home-ink)" }}
+            >
+              {tabmonk.name}
+            </a>
+            <a
+              href={qpQuintet.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="home-accent-link"
+              style={{ color: "var(--color-home-ink)" }}
+            >
+              {qpQuintet.name}
+            </a>
+          </div>
+        </div>
       </footer>
     </div>
   );

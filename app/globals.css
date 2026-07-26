@@ -3,23 +3,34 @@
 @theme {
   --color-paper: #FAFAF7;
   --color-ink: #0A0A0A;
+  /* Canonical Grinbuck brand green — the one accent color for every
+     Grinbuck-family property (grinbuck.com, Grinbuck3D, ClickIT, tabMonk,
+     QP Quintet). Hex equivalent: #4A7C2F. Locked, not approximated. */
   --color-brand: oklch(0.424 0.112 145.6);
-  /* Lighter brand for text on dark (#0A0A0A) backgrounds — passes WCAG AA 4.5:1 */
+  /* Lighter brand for text on dark (#0A0A0A) backgrounds — passes WCAG AA
+     4.5:1. Same hue as --color-brand, lightened. */
   --color-brand-on-dark: oklch(0.72 0.16 145.6);
   --color-hairline: #ECECE6;
   --color-subhead: #3A3A38;   /* secondary text on light bg */
   --color-muted: #9A9A96;     /* muted text on dark bg — passes WCAG AA on #0A0A0A */
   --shadow-lift: 0 18px 40px -24px rgba(10,10,10,0.45);
 
-  /* ClickIT's secondary accent — warm terracotta paired with brand green,
-     for visual differentiation from Grinbuck's corporate palette. Same
-     lightness (0.42) as --color-brand so it behaves the same for contrast
-     (dark enough for white text on top). Used only on the ClickIT page. */
-  --color-clickit-accent: oklch(0.42 0.14 55);
-  /* Lighter accent for text on dark (#0A0A0A) backgrounds, same relationship
-     as --color-brand-on-dark is to --color-brand. */
-  --color-clickit-accent-on-dark: oklch(0.75 0.13 55);
-  --color-clickit-tint: oklch(0.96 0.025 55);
+  /* Light tint of --color-brand, same hue, for tinted panel/band
+     backgrounds. A tonal variant of the one accent, not a second color —
+     same relationship as --color-brand-on-dark. */
+  --color-brand-tint: oklch(0.96 0.02 145.6);
+
+  /* Homepage-redesign palette — "Serious Tech. Serious Fun." (homepage,
+     /grinbuck3d, /grinbuck3d/clickit). Base is a cool off-white (not the
+     previous warm cream) so the single green accent does the warming.
+     Near-black ink retained; accent is the exact wordmark green above. */
+  --color-home-paper: #F6F7F7;
+  --color-home-ink: #161512;
+  --color-home-accent: var(--color-brand);
+  --color-home-hairline: #dedad2;
+  --color-home-eyebrow: oklch(0.55 0.02 80);
+  /* QP Quintet's band tint — neutral warm paper, not tan/orange-adjacent. */
+  --color-home-neutral-tint: #F0ECE6;
 }
 
 /* Dark mode: richer brand green */
@@ -29,9 +40,9 @@
   }
 }
 
-/* Expose GeistMono under the canonical --font-mono variable */
+/* Expose Noto Sans Mono under the canonical --font-mono variable */
 :root {
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-noto-mono);
 }
 
 /* No `scroll-behavior: smooth` here — Lenis owns smooth scrolling via
@@ -61,10 +72,19 @@ body::before {
 
 /* Brand focus ring for keyboard / switch navigation */
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+/* Form controls (components/forms/fields.tsx) — border shifts to the
+   brand accent on focus, alongside the outline above. */
+.form-control:focus-visible {
+  border-color: var(--color-brand);
 }
 
 /* ── Interactive element hover states ── */
@@ -91,4 +111,41 @@ button:focus-visible {
 .footer-link:hover {
   opacity: 0.8 !important;
   text-decoration-color: currentColor;
+}
+
+/* ── Homepage redesign hover states ── */
+
+/* Plain text links that just shift to the accent color — nav, footer
+   venture list, per-band "Visit X →" CTAs. */
+.home-accent-link {
+  transition: color 0.15s ease;
+}
+.home-accent-link:hover {
+  color: var(--color-home-accent);
+}
+
+.home-hero-cta {
+  transition: background-color 0.18s ease;
+}
+.home-hero-cta:hover {
+  background: var(--color-home-accent);
+}
+
+.home-band-manufacturing:hover {
+  background: #000;
+}
+.home-band-tabmonk:hover {
+  background: #E7F1E1;
+}
+.home-band-qp:hover {
+  background: #E8E2D9;
+}
+
+/* ── Mobile responsiveness: redesign pages' 2-column grids collapse to a
+   single column under 768px. Applied via className alongside the inline
+   style that sets the desktop fr-ratios. ── */
+@media (max-width: 768px) {
+  .two-col-grid {
+    grid-template-columns: 1fr !important;
+  }
 }

@@ -13,6 +13,7 @@ export const SECTION_MAX_WIDTH = "1100px";
 export const SECTION_PADDING_X = "clamp(2rem, 6vw, 8rem)";
 
 export const CONTACT_EMAIL = "hello@grinbuck.com";
+export const SITE_LEGAL_NAME = "Grinbuck Technologies Inc.";
 
 // Nav dimensions
 export const NAV_HEIGHT = 60; // px — sticky header height

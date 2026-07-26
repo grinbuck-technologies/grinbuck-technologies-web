@@ -16,36 +16,216 @@ import {
   ANIM_Y_HERO,
   ANIM_Y_REVEAL,
 } from "@/lib/constants";
-import { products } from "@/lib/clickitProducts";
+import { clicker } from "@/lib/clickitProducts";
+import { EYEBROW_STYLE } from "@/lib/typography";
 import { Nav } from "@/components/Nav";
+import { BeatStack } from "@/components/BeatStack";
+import { CtaButton } from "@/components/CtaButton";
+import { FocusTap, PawPrint } from "@/components/illustrations";
 
 const HOME_HREF = "/";
 
-const HERO_SUBHEAD =
-  "ClickIT makes tactile tools for focus, built to work by touch instead of sight. Kids, students, and adults use them to stay calm and focused, anywhere they need to.";
+// Denser vertical rhythm than the rest of the site. An editorial feature,
+// not a landing page with one statement per screen.
+const SECTION_PAD_Y = "clamp(2rem, 4vh, 3rem)";
 
-const EVIDENCE_HEADING = "Why tactile works.";
-const EVIDENCE_SUBHEAD = "Most fidget tools miss what the research actually supports.";
+const HERO_THESIS =
+  "A click is one of the most versatile behavioural tools ever made. ClickIT builds that mechanism into a single pocket clicker, for two very different jobs.";
 
-const EVIDENCE_POINTS = [
-  "ADHD and autism diagnoses keep climbing, in classrooms and well beyond them. Focus and self-regulation are mainstream needs now, not a niche accommodation.",
-  "The tools that actually help work quietly, below conscious attention. Visual fidgets like spinners do the opposite, and that's exactly why so many schools have already banned them.",
-  "ClickIT was built for the category that works, not the category that got banned. That distinction is the whole point, whether that's a classroom, an office, or anywhere focus is hard to hold onto.",
+const PRODUCT_FACTS = [
+  "ABS plastic",
+  "3D-printed and assembled in Victoria, BC",
+  "Pocket-sized",
+  "No batteries, no screen, nothing to charge",
 ];
 
-const PRODUCTS_HEADING = "Our products.";
-const PRODUCTS_SUBHEAD =
-  "Two tools, one purpose: quiet, tactile focus wherever you need it.";
+const VARIANT_HONESTY_BEATS = [
+  "Today, ClickIT is one physical clicker, used two different ways.",
+  "We haven't split it into dedicated silent and audible hardware variants yet. That's the honest state of the product line right now, not a range that doesn't exist.",
+];
+
+type Application = {
+  id: "focus" | "training";
+  eyebrow: string;
+  ctaLabel: string;
+  ctaHref: string;
+  audience: string[];
+};
+
+const APPLICATIONS: Application[] = [
+  {
+    id: "focus",
+    eyebrow: "The quiet one, for focus",
+    ctaLabel: "Read the focus story",
+    ctaHref: "#focus",
+    audience: [
+      "Schools",
+      "Daycares & kindergartens",
+      "Pediatric dental offices",
+      "Children's hospitals",
+      "OT clinics",
+      "Offices",
+    ],
+  },
+  {
+    id: "training",
+    eyebrow: "The loud one, for training",
+    ctaLabel: "Read the training story",
+    ctaHref: "#training",
+    audience: [
+      "Dog trainers & owners",
+      "Obedience clubs",
+      "Shelters",
+      "Stables",
+      "Veterinary practices",
+      "Coaches & instructors",
+    ],
+  },
+];
+
+// Each inner array is one "beat group": a handful of short (1-2 sentence)
+// paragraphs stacked with space between them, rather than one dense block.
+const FOCUS_BEAT_GROUPS: string[][] = [
+  [
+    "ADHD is now the most commonly diagnosed long-term condition among children and youth in Canada.",
+    "Prevalence rose from 6.7% in 2019 to 8.4% in 2023. Autism rose from 2.0% to 3.0% over the same period.",
+    "One in four Canadian children and youth, more than 1.6 million kids, now has at least one diagnosed long-term condition (Public Health Agency of Canada, Canadian Health Survey on Children and Youth, 2023).",
+  ],
+  [
+    "Fidget spinners answered that need badly enough to get banned.",
+    "At the peak of the craze, about a third of the top 200 US schools banned fidgets outright.",
+    "The research backs the bans, at least for spinners. Studies found they increased distracted behaviour in kids with ADHD and dragged down third-graders' math scores.",
+    "One university lecture study found spinners cut retention substantially for the student using one, and measurably for students sitting nearby.",
+  ],
+  [
+    "The problem is that spinners are visual. They demand hand-eye coordination.",
+    "That pulls the user's eyes, and their neighbours' eyes, off whatever they're supposed to be doing.",
+    "Occupational therapists have always recommended the opposite: something tactile, worked by feel, that never asks to be looked at.",
+  ],
+  [
+    "The other complaint is volume.",
+    "Ask teachers and they're close to unanimous. The fidgets that survive in a classroom are the quiet ones.",
+    "A clicking pen is the textbook example of what not to do.",
+  ],
+];
+
+const FOCUS_SOLUTION =
+  "ClickIT's clicker is built to the constraint teachers actually name: feedback you can feel without looking, that the room never hears.";
+
+const FOCUS_HONESTY_BEATS = [
+  "The evidence that fidget tools improve attention or grades is weak.",
+  "A controlled classroom study of a leading tactile fidget, the Fidget Cube, found no improvement in on-task behaviour or math productivity. Its authors suggested schools consider phasing fidgets out entirely (Croley, Drevon & Decker, 2022).",
+  "The honest summary across reviews: fidgeting doesn't reliably improve attention.",
+  "At best, for some people in some contexts, it may displace more disruptive habits and support self-regulation (Edutopia, 2024).",
+];
+
+const FOCUS_POSITIONING_BEATS = [
+  "ClickIT doesn't claim to improve focus, attention, grades, or ADHD symptoms. It isn't a treatment.",
+  "It's a self-regulation tool engineered to be the least disruptive option in the room.",
+  "Teachers already settled this. Fidgets are fine when they're tools, not toys, which means quiet, tactile, and put away when they stop helping.",
+];
 
 const PILOT_HEADING = "Bringing ClickIT to your space?";
 const PILOT_COPY =
-  "Schools, daycares, kindergartens, pediatric dental offices, and children's hospitals are already putting ClickIT to work. If yours could use the same, we'll send a free pilot kit: 10 units, six weeks, no obligation.";
+  "Schools, daycares, kindergartens, pediatric dental offices, and children's hospitals are already putting ClickIT to work. If yours could use the same, tell us your unit count and we'll follow up with a custom quote.";
+
+const TRAINING_MECHANISM_BEATS = [
+  "A clicker is an event marker. The sound is short and identical every time.",
+  "Unlike a spoken word, it lands at the exact instant a behaviour happens.",
+  'Paired consistently with a reward, that sound becomes a conditioned reinforcer. The animal learns the click itself means "that, right there, was correct."',
+];
+
+type TimelineEntry = { step: string; year?: string; text: string };
+
+// The signature moment for this page: a real, checkable sequence, told
+// typographically rather than with illustration.
+const TIMELINE: TimelineEntry[] = [
+  {
+    step: "01",
+    year: "1951",
+    text: 'B.F. Skinner introduces the clicker as a conditioned reinforcer, in "How to Teach Animals" (Scientific American).',
+  },
+  { step: "02", text: "Marian and Keller Breland commercialize clicker training." },
+  {
+    step: "03",
+    text: "Refined on dolphins in marine mammal parks through the 1950s and 60s.",
+  },
+  {
+    step: "04",
+    text: "Karen Pryor popularizes clicker training beyond the marine mammal world.",
+  },
+  { step: "05", text: "TAGteach adapts the same marker principle for people." },
+  { step: "06", text: "Today: ClickIT builds the mechanism into one pocket tool." },
+];
+
+const TRAINING_BREADTH_BEATS = [
+  "The breadth is what makes this interesting. Dogs and horses, obviously.",
+  "But also zoos and aquariums, where accredited facilities use marker training so animals take part voluntarily in their own veterinary care: elephants presenting a foot for a pedicure, voluntary blood draws, tortoises and storks stepping onto a scale, macaws, primates, reptiles.",
+  "Laboratory animal welfare programs use it too. So do shelter and rescue rehabilitation programs.",
+];
+
+const TRAINING_TAGTEACH_BEATS = [
+  "The human branch is called TAGteach, Teaching with Acoustical Guidance. It's the same marker principle applied to people.",
+  "It shows up in elite gymnastics and dance, professional golf instruction, yoga, orthopedic surgical technique, emergency nursing, physical therapy and gait retraining, speech therapy, special education and mainstream classrooms, and workplace safety training.",
+  "The reason it works there is specific. A click can mark a body position a learner can't see themselves, toes pointed, back straight, at the exact moment it's correct. Spoken feedback always arrives too late for that.",
+];
+
+const TRAINING_HONESTY_BEATS = [
+  'The training literature is mixed on whether a clicker actually outperforms other consistent markers, a verbal "yes," a whistle. We\'re not claiming it does.',
+  "What's true and well documented is the consistency and the timing precision. This is the tool the field standardized on.",
+];
+
+type Source = { label: string; url: string };
+
+const SOURCES: Source[] = [
+  {
+    label: "Public Health Agency of Canada: chronic conditions in childhood, prevalence",
+    url: "https://health-infobase.canada.ca/chronic-conditions/childhood/prevalence.html",
+  },
+  {
+    label: 'Scientific American: "Fidget Toys Aren\'t Just Hype" (2017)',
+    url: "https://www.scientificamerican.com/article/fidget-toys-arent-just-hype/",
+  },
+  {
+    label: 'Edutopia: "Do Fidgets Help Students Focus?" (2024)',
+    url: "https://www.edutopia.org/article/do-fidgets-help-students-focus/",
+  },
+  {
+    label:
+      "Croley, Drevon & Decker: Fidget Cube classroom study, Behavior Analysis in Practice (2022)",
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9388206/",
+  },
+  {
+    label:
+      "Fidget devices and disruptive behaviour in students with autism, Contemporary School Psychology (2025)",
+    url: "https://link.springer.com/article/10.1007/s40688-025-00551-w",
+  },
+];
+
+// This page's default eyebrow color (muted gray) — spread EYEBROW_STYLE
+// first, then this, to get the shared base with a page-specific default.
+const eyebrowStyle: React.CSSProperties = {
+  ...EYEBROW_STYLE,
+  color: "var(--color-subhead)",
+};
+
+const beatStyle: React.CSSProperties = {
+  fontFamily: "var(--font-noto-sans)",
+  fontWeight: 400,
+  fontSize: "0.9375rem",
+  lineHeight: 1.55,
+  color: "var(--color-ink)",
+  margin: 0,
+};
 
 /**
- * Client-rendered content for the ClickIT venture page: hero, "Why tactile
- * works" evidence section, product grid (sourced from `lib/clickitProducts`),
- * and pilot-program CTA, plus GSAP scroll-reveal animations. Rendered by the
- * thin server component at `app/clickit/page.tsx`.
+ * Client-rendered content for the ClickIT product page: a dense, editorial
+ * layout covering the one physical product and its two honestly-distinct
+ * applications, focus/tactile regulation (evidence-grounded, own pilot-kit
+ * CTA) and marker training (operant-conditioning mechanism, a lineage
+ * timeline, own shop CTA), plus a real sources list and GSAP scroll-reveal
+ * animations. Rendered by the thin server component at
+ * `app/grinbuck3d/clickit/page.tsx`.
  */
 export function ClickitClient() {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -54,7 +234,6 @@ export function ClickitClient() {
     () => {
       if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return;
 
-      // Hero: animate in on mount (above fold)
       gsap.fromTo(
         ".js-hero",
         { opacity: 0, y: ANIM_Y_HERO },
@@ -68,7 +247,6 @@ export function ClickitClient() {
         }
       );
 
-      // Below-fold: ScrollTrigger reveals
       gsap.utils.toArray<HTMLElement>(".js-reveal").forEach((el) => {
         gsap.fromTo(
           el,
@@ -88,357 +266,706 @@ export function ClickitClient() {
     { scope: pageRef }
   );
 
+  const focus = APPLICATIONS.find((a) => a.id === "focus")!;
+  const training = APPLICATIONS.find((a) => a.id === "training")!;
+
   return (
     <div ref={pageRef}>
-      <Nav homeHref={HOME_HREF} links={[{ label: "Home", href: HOME_HREF }]} />
+      <Nav
+        homeHref={HOME_HREF}
+        links={[
+          { label: "Grinbuck3D", href: "/grinbuck3d" },
+          { label: "Home", href: HOME_HREF },
+        ]}
+      />
 
       <main>
-        {/* ── Hero ── */}
+        {/* ── S1: Hero ── */}
         <section
           id="hero"
           style={{
-            minHeight: "90vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            padding: "clamp(5rem, 12vh, 10rem) clamp(1.5rem, 4vw, 4rem)",
+            padding: `clamp(2.5rem, 6vh, 4rem) ${SECTION_PADDING_X} ${SECTION_PAD_Y}`,
             background: "var(--color-paper)",
-          }}
-        >
-          {/* Required brand link: "Click" (ink) / "IT" (brand green), mirroring
-              the nav's "grin"/"buck" lockup. */}
-          <span
-            className="js-hero"
-            style={{
-              display: "block",
-              fontFamily: "var(--font-display)",
-              fontSize: "1.5rem",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              marginBottom: "1.75rem",
-            }}
-          >
-            <span style={{ color: "var(--color-ink)" }}>Click</span>
-            <span style={{ color: "var(--color-brand)" }}>IT</span>
-          </span>
-          <h1
-            className="js-hero"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(3rem, 7vw, 5.5rem)",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              lineHeight: 1.05,
-              color: "var(--color-ink)",
-              maxWidth: "880px",
-              margin: "0 0 1.5rem",
-            }}
-          >
-            Built to help you focus,<br />wherever you need it.
-          </h1>
-          <p
-            className="js-hero"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(1rem, 1.5vw, 1.25rem)",
-              fontWeight: 400,
-              lineHeight: 1.65,
-              color: "var(--color-subhead)",
-              maxWidth: "540px",
-              margin: 0,
-            }}
-          >
-            {HERO_SUBHEAD}
-          </p>
-        </section>
-
-        {/* ── Evidence ── */}
-        <section
-          id="evidence"
-          style={{
-            background: "var(--color-paper)",
-            padding: `clamp(3rem, 6vh, 4.5rem) ${SECTION_PADDING_X} clamp(5rem, 10vh, 8rem)`,
-            scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
             display: "flex",
             justifyContent: "center",
           }}
         >
           <div style={{ maxWidth: SECTION_MAX_WIDTH, width: "100%" }}>
-            <div style={{ marginBottom: "3rem", textAlign: "center" }}>
-              <h2
-                className="js-reveal"
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(2rem, 4vw, 3rem)",
-                  fontWeight: 600,
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1.15,
-                  color: "var(--color-ink)",
-                  margin: "0 0 0.75rem",
-                }}
-              >
-                {EVIDENCE_HEADING}
-              </h2>
-              <p
-                className="js-reveal"
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "1.125rem",
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  color: "var(--color-subhead)",
-                  margin: 0,
-                }}
-              >
-                {EVIDENCE_SUBHEAD}
-              </p>
-            </div>
-
-            {/* Evidence sits in a tinted panel embedded in the page — the
-                pilot section below reuses this same treatment, so the two
-                inset panels read as one consistent pattern, not one-offs. */}
             <div
-              className="js-reveal"
+              className="js-hero"
+              style={{ ...eyebrowStyle, marginBottom: "1rem" }}
+            >
+              A Grinbuck3D product line
+            </div>
+            {/* The wordmark IS the hero headline here — dominant on first
+                paint, before any reveal animation settles, so it wins
+                against the thesis line beneath it. */}
+            <h1
+              className="js-hero"
               style={{
-                background: "var(--color-clickit-tint)",
-                borderRadius: "24px",
-                padding: "clamp(2rem, 5vw, 3.5rem)",
+                display: "block",
+                fontFamily: "var(--font-noto-sans)",
+                fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 0.95,
+                margin: "0 0 0.875rem",
               }}
             >
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                  gap: "3rem clamp(2rem, 4vw, 4rem)",
-                  justifyContent: "center",
-                }}
-              >
-                {EVIDENCE_POINTS.map((point, i) => (
-                  <div key={point}>
-                    <span
-                      style={{
-                        display: "block",
-                        fontFamily: "var(--font-display)",
-                        fontSize: "0.8125rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.08em",
-                        color: "var(--color-clickit-accent)",
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <p
-                      style={{
-                        fontFamily: "var(--font-display)",
-                        fontSize: "1.0625rem",
-                        fontWeight: 400,
-                        lineHeight: 1.65,
-                        color: "var(--color-ink)",
-                        margin: 0,
-                      }}
-                    >
-                      {point}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <span style={{ color: "var(--color-ink)" }}>Click</span>
+              <span style={{ color: "var(--color-brand)" }}>IT</span>
+            </h1>
+            <p
+              className="js-hero"
+              style={{
+                fontFamily: "var(--font-noto-sans)",
+                fontWeight: 700,
+                fontSize: "clamp(1.25rem, 2.5vw, 1.625rem)",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.25,
+                color: "var(--color-ink)",
+                maxWidth: "700px",
+                margin: "0 0 1rem",
+              }}
+            >
+              The click, engineered properly.
+            </p>
+            <p
+              className="js-hero"
+              style={{
+                fontFamily: "var(--font-noto-sans)",
+                fontWeight: 400,
+                fontSize: "1.0625rem",
+                lineHeight: 1.55,
+                color: "var(--color-subhead)",
+                maxWidth: "600px",
+                margin: "0 0 1.75rem",
+              }}
+            >
+              {HERO_THESIS}
+            </p>
+            <div
+              className="js-hero"
+              style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}
+            >
+              {APPLICATIONS.map((app) => (
+                <CtaButton
+                  key={app.id}
+                  href={app.ctaHref}
+                  size="sm"
+                  variant={app.id === "focus" ? "ink" : "brand"}
+                  icon={
+                    app.id === "focus" ? (
+                      <FocusTap width={18} height={18} color="var(--color-paper)" strokeWidth={5} />
+                    ) : (
+                      <PawPrint width={18} height={18} color="var(--color-paper)" strokeWidth={5} />
+                    )
+                  }
+                >
+                  {app.eyebrow} &rarr;
+                </CtaButton>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* ── Products ── */}
-        {/* The only place products appear — both shown with equal weight,
-            no product singled out as "hero". */}
+        {/* ── S2: The one product ── */}
         <section
-          id="catalog"
           style={{
             background: "var(--color-paper)",
-            padding: `clamp(3rem, 6vh, 4.5rem) ${SECTION_PADDING_X} clamp(5rem, 10vh, 8rem)`,
+            padding: `0 ${SECTION_PADDING_X} ${SECTION_PAD_Y}`,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            className="js-reveal"
+            style={{
+              maxWidth: SECTION_MAX_WIDTH,
+              width: "100%",
+              borderTop: "1px solid var(--color-hairline)",
+              borderBottom: "1px solid var(--color-hairline)",
+              padding: "1.5rem 0",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                gap: "1rem",
+                marginBottom: "0.75rem",
+              }}
+            >
+              <h2
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "1.25rem",
+                  letterSpacing: "-0.01em",
+                  color: "var(--color-ink)",
+                  margin: 0,
+                }}
+              >
+                {clicker.name}.
+              </h2>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0.5rem 1.5rem",
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 400,
+                  fontSize: "0.875rem",
+                  color: "var(--color-subhead)",
+                }}
+              >
+                {PRODUCT_FACTS.map((fact) => (
+                  <span key={fact}>{fact}</span>
+                ))}
+              </div>
+            </div>
+            <div style={{ maxWidth: "680px" }}>
+              <BeatStack beats={VARIANT_HONESTY_BEATS} paragraphStyle={beatStyle} />
+            </div>
+          </div>
+        </section>
+
+        {/* ── S3: Focus & self-regulation ── */}
+        <section
+          id="focus"
+          style={{
+            background: "var(--color-paper)",
+            padding: `0 ${SECTION_PADDING_X} ${SECTION_PAD_Y}`,
             scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
             display: "flex",
             justifyContent: "center",
           }}
         >
           <div style={{ maxWidth: SECTION_MAX_WIDTH, width: "100%" }}>
-            <div style={{ marginBottom: "3rem", textAlign: "center" }}>
+            <div style={{ ...eyebrowStyle, marginBottom: "0.5rem" }}>
+              01 / Focus &amp; Regulation
+            </div>
+            <div
+              className="js-reveal"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.875rem",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <FocusTap width={36} height={36} color="var(--color-brand)" strokeWidth={4} />
               <h2
-                className="js-reveal"
                 style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(2rem, 4vw, 3rem)",
-                  fontWeight: 600,
+                  fontFamily: "var(--font-noto-sans)",
+                  fontSize: "clamp(1.9rem, 4vw, 2.75rem)",
+                  fontWeight: 800,
                   letterSpacing: "-0.02em",
-                  lineHeight: 1.15,
+                  lineHeight: 1.05,
                   color: "var(--color-ink)",
-                  margin: "0 0 0.75rem",
-                }}
-              >
-                {PRODUCTS_HEADING}
-              </h2>
-              <p
-                className="js-reveal"
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "1.125rem",
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  color: "var(--color-subhead)",
                   margin: 0,
                 }}
               >
-                {PRODUCTS_SUBHEAD}
-              </p>
+                The quiet one.
+              </h2>
             </div>
 
             <div
+              className="js-reveal two-col-grid"
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "2rem clamp(2rem, 4vw, 4rem)",
-                justifyContent: "center",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1.5rem 3rem",
+                marginBottom: "1.5rem",
               }}
             >
-              {products.map((product) => (
-                <div
-                  key={product.name}
-                  className="js-reveal"
+              {FOCUS_BEAT_GROUPS.map((beats, i) => (
+                <BeatStack key={i} beats={beats} paragraphStyle={beatStyle} />
+              ))}
+            </div>
+
+            <p
+              className="js-reveal"
+              style={{
+                fontFamily: "var(--font-noto-sans)",
+                fontWeight: 700,
+                fontSize: "1.0625rem",
+                lineHeight: 1.5,
+                color: "var(--color-ink)",
+                borderLeft: "3px solid var(--color-brand)",
+                paddingLeft: "1.25rem",
+                margin: "0 0 1.5rem",
+              }}
+            >
+              {FOCUS_SOLUTION}
+            </p>
+
+            {/* Honesty box, deliberately set apart from the marketing copy
+                above, not buried in a footnote. */}
+            <div
+              className="js-reveal"
+              style={{
+                background: "var(--color-brand-tint)",
+                borderRadius: "16px",
+                padding: "clamp(1.5rem, 4vw, 2rem)",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: "var(--color-brand)",
+                  marginBottom: "0.75rem",
+                }}
+              >
+                What the research actually shows
+              </div>
+              <div style={{ marginBottom: "0.75rem" }}>
+                <BeatStack beats={FOCUS_HONESTY_BEATS} paragraphStyle={beatStyle} />
+              </div>
+              <BeatStack
+                beats={FOCUS_POSITIONING_BEATS}
+                paragraphStyle={{ ...beatStyle, fontWeight: 700 }}
+              />
+            </div>
+
+            {/* Pilot-kit CTA, the classroom/institutional path, kept apart
+                from the dog-training CTA so neither audience lands on the
+                wrong form. */}
+            <div
+              id="pilot"
+              className="js-reveal"
+              style={{
+                background: "var(--color-ink)",
+                borderRadius: "16px",
+                padding: "clamp(1.5rem, 4vw, 2rem)",
+                scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "1.5rem",
+              }}
+            >
+              <div style={{ maxWidth: "460px" }}>
+                <h3
                   style={{
-                    border: "1px solid var(--color-hairline)",
-                    borderRadius: "16px",
-                    padding: "2rem",
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 700,
+                    fontSize: "1.25rem",
+                    letterSpacing: "-0.01em",
+                    color: "white",
+                    margin: "0 0 0.5rem",
                   }}
                 >
-                  <h3
+                  {PILOT_HEADING}
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "var(--font-noto-sans)",
+                    fontWeight: 400,
+                    fontSize: "0.9375rem",
+                    lineHeight: 1.55,
+                    color: "#c9c6bd",
+                    margin: 0,
+                  }}
+                >
+                  {PILOT_COPY}
+                </p>
+              </div>
+              <CtaButton href="/grinbuck3d/clickit/pilot-kit">
+                Request a pilot kit &rarr;
+              </CtaButton>
+            </div>
+          </div>
+        </section>
+
+        {/* ── S4: Marker training ── */}
+        <section
+          id="training"
+          style={{
+            background: "var(--color-paper)",
+            padding: `0 ${SECTION_PADDING_X} ${SECTION_PAD_Y}`,
+            scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <div style={{ maxWidth: SECTION_MAX_WIDTH, width: "100%" }}>
+            <div style={{ ...eyebrowStyle, marginBottom: "0.5rem" }}>
+              02 / Marker Training
+            </div>
+            <div
+              className="js-reveal"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.875rem",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <PawPrint width={36} height={36} color="var(--color-brand)" strokeWidth={4} />
+              <h2
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontSize: "clamp(1.9rem, 4vw, 2.75rem)",
+                  fontWeight: 800,
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.05,
+                  color: "var(--color-ink)",
+                  margin: 0,
+                }}
+              >
+                The loud one.
+              </h2>
+            </div>
+
+            <div className="js-reveal" style={{ marginBottom: "1.5rem" }}>
+              <BeatStack beats={TRAINING_MECHANISM_BEATS} paragraphStyle={beatStyle} />
+            </div>
+
+            {/* Signature moment: a real, checkable lineage, told
+                typographically. */}
+            <div
+              className="js-reveal"
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "1.5rem",
+                borderTop: "1px solid var(--color-hairline)",
+                borderBottom: "1px solid var(--color-hairline)",
+                padding: "1.5rem 0",
+                marginBottom: "1.5rem",
+              }}
+            >
+              {TIMELINE.map((entry) => (
+                <div key={entry.step} style={{ flex: "1 1 150px", minWidth: "150px" }}>
+                  <div
                     style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "1.5rem",
+                      fontFamily: "var(--font-mono)",
                       fontWeight: 700,
-                      letterSpacing: "-0.01em",
-                      color: "var(--color-ink)",
-                      margin: "0 0 0.75rem",
+                      fontSize: "0.75rem",
+                      letterSpacing: "0.08em",
+                      color: "var(--color-brand)",
+                      marginBottom: "0.375rem",
                     }}
                   >
-                    {product.name}
-                  </h3>
+                    {entry.step}
+                    {entry.year ? ` / ${entry.year}` : ""}
+                  </div>
                   <p
                     style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "1rem",
+                      fontFamily: "var(--font-noto-sans)",
                       fontWeight: 400,
-                      lineHeight: 1.6,
-                      color: "var(--color-subhead)",
+                      fontSize: "0.875rem",
+                      lineHeight: 1.5,
+                      color: "var(--color-ink)",
                       margin: 0,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
                     }}
                   >
-                    {product.description}
+                    {entry.text}
                   </p>
                 </div>
               ))}
             </div>
 
-            <div style={{ marginTop: "2.5rem", textAlign: "center" }}>
-              <Link
-                className="btn-cta"
-                href="/clickit/shop"
+            <div
+              className="js-reveal two-col-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1.5rem 3rem",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <BeatStack beats={TRAINING_BREADTH_BEATS} paragraphStyle={beatStyle} />
+              <BeatStack beats={TRAINING_TAGTEACH_BEATS} paragraphStyle={beatStyle} />
+            </div>
+
+            <div
+              className="js-reveal"
+              style={{
+                background: "var(--color-brand-tint)",
+                borderRadius: "16px",
+                padding: "clamp(1.5rem, 4vw, 2rem)",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <div
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                  padding: "0.75rem 1.75rem",
-                  background: "var(--color-clickit-accent)",
-                  color: "var(--color-paper)",
-                  fontFamily: "var(--font-display)",
-                  fontSize: "0.9375rem",
-                  fontWeight: 500,
-                  letterSpacing: "-0.01em",
-                  textDecoration: "none",
-                  borderRadius: "6px",
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: "var(--color-brand)",
+                  marginBottom: "0.75rem",
                 }}
               >
-                Visit our shop →
-              </Link>
+                What the research actually shows
+              </div>
+              <BeatStack beats={TRAINING_HONESTY_BEATS} paragraphStyle={beatStyle} />
+            </div>
+
+            {/* Distinct CTA. Dog trainers don't want the classroom pilot
+                form, they want to buy the product. */}
+            <div
+              className="js-reveal"
+              style={{
+                background: "var(--color-ink)",
+                borderRadius: "16px",
+                padding: "clamp(1.5rem, 4vw, 2rem)",
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "1.25rem",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "1.0625rem",
+                  color: "white",
+                  margin: 0,
+                }}
+              >
+                Training your dog? Pick one up.
+              </p>
+              <CtaButton href="/grinbuck3d/clickit/quote" size="sm">
+                Shop for dog training &rarr;
+              </CtaButton>
             </div>
           </div>
         </section>
 
-        {/* ── Pilot program CTA ── */}
-        {/* Same tinted-panel treatment as evidence, not a separate color
-            band — one consistent accent pattern across the page. */}
+        {/* ── S5: Who it's for ── */}
         <section
-          id="pilot"
           style={{
             background: "var(--color-paper)",
-            padding: `clamp(3rem, 6vh, 4.5rem) ${SECTION_PADDING_X} clamp(5rem, 10vh, 8rem)`,
-            scrollMarginTop: `${NAV_SCROLL_OFFSET}px`,
+            padding: `0 ${SECTION_PADDING_X} ${SECTION_PAD_Y}`,
             display: "flex",
             justifyContent: "center",
           }}
         >
           <div style={{ maxWidth: SECTION_MAX_WIDTH, width: "100%" }}>
-            <div
+            <h2
               className="js-reveal"
               style={{
-                background: "var(--color-clickit-tint)",
-                borderRadius: "24px",
-                padding: "clamp(2.5rem, 6vw, 4rem)",
-                textAlign: "center",
+                fontFamily: "var(--font-noto-sans)",
+                fontWeight: 800,
+                fontSize: "1.375rem",
+                letterSpacing: "-0.01em",
+                color: "var(--color-ink)",
+                margin: "0 0 1.25rem",
               }}
             >
-              <div style={{ maxWidth: "640px", margin: "0 auto" }}>
-                <h2
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "clamp(2rem, 4vw, 3rem)",
-                    fontWeight: 600,
-                    letterSpacing: "-0.02em",
-                    lineHeight: 1.15,
-                    color: "var(--color-ink)",
-                    margin: "0 0 1.25rem",
-                  }}
-                >
-                  {PILOT_HEADING}
-                </h2>
-                <p
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "1.125rem",
-                    fontWeight: 400,
-                    lineHeight: 1.65,
-                    color: "var(--color-subhead)",
-                    margin: "0 0 2rem",
-                  }}
-                >
-                  {PILOT_COPY}
-                </p>
-                <a
-                  className="btn-cta"
-                  href="/clickit#pilot"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "0.875rem 2rem",
-                    background: "var(--color-clickit-accent)",
-                    color: "var(--color-paper)",
-                    fontFamily: "var(--font-display)",
-                    fontSize: "0.9375rem",
-                    fontWeight: 600,
-                    letterSpacing: "-0.01em",
-                    textDecoration: "none",
-                    borderRadius: "6px",
-                  }}
-                >
-                  Request a pilot kit →
-                </a>
-              </div>
+              Who it&apos;s for.
+            </h2>
+            <div
+              className="js-reveal two-col-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "2rem",
+              }}
+            >
+              {[focus, training].map((app) => (
+                <div key={app.id}>
+                  <div
+                    style={{
+                      ...eyebrowStyle,
+                      color: "var(--color-brand)",
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    {app.eyebrow}
+                  </div>
+                  <ul
+                    style={{
+                      listStyle: "none",
+                      margin: 0,
+                      padding: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    {app.audience.map((who) => (
+                      <li
+                        key={who}
+                        style={{
+                          fontFamily: "var(--font-noto-sans)",
+                          fontWeight: 400,
+                          fontSize: "0.9375rem",
+                          color: "var(--color-subhead)",
+                        }}
+                      >
+                        {who}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── S6: Two CTAs, closing ── */}
+        <section
+          style={{
+            background: "var(--color-paper)",
+            padding: `0 ${SECTION_PADDING_X} ${SECTION_PAD_Y}`,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            className="js-reveal two-col-grid"
+            style={{
+              maxWidth: SECTION_MAX_WIDTH,
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "1.5rem",
+            }}
+          >
+            <Link
+              className="btn-cta"
+              href="/grinbuck3d/clickit/pilot-kit"
+              style={{
+                display: "block",
+                background: "var(--color-ink)",
+                color: "white",
+                borderRadius: "16px",
+                padding: "clamp(1.5rem, 4vw, 2rem)",
+                textDecoration: "none",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "1.0625rem",
+                  marginBottom: "0.375rem",
+                }}
+              >
+                Request a pilot kit &rarr;
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 400,
+                  fontSize: "0.875rem",
+                  color: "#c9c6bd",
+                }}
+              >
+                For schools, clinics, and institutions.
+              </div>
+            </Link>
+            <Link
+              className="btn-cta"
+              href="/grinbuck3d/clickit/quote"
+              style={{
+                display: "block",
+                background: "var(--color-brand)",
+                color: "var(--color-paper)",
+                borderRadius: "16px",
+                padding: "clamp(1.5rem, 4vw, 2rem)",
+                textDecoration: "none",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "1.0625rem",
+                  marginBottom: "0.375rem",
+                }}
+              >
+                Shop for dog training &rarr;
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 400,
+                  fontSize: "0.875rem",
+                }}
+              >
+                For trainers, owners, and clubs.
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* ── S7: Sources ── */}
+        <section
+          style={{
+            background: "var(--color-paper)",
+            padding: `0 ${SECTION_PADDING_X} ${SECTION_PAD_Y}`,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            className="js-reveal"
+            style={{
+              maxWidth: SECTION_MAX_WIDTH,
+              width: "100%",
+              borderTop: "1px solid var(--color-hairline)",
+              paddingTop: "1.5rem",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: "var(--font-noto-sans)",
+                fontWeight: 700,
+                fontSize: "0.9375rem",
+                letterSpacing: "-0.01em",
+                color: "var(--color-ink)",
+                margin: "0 0 1rem",
+              }}
+            >
+              Sources &amp; further reading.
+            </h2>
+            <ul
+              style={{
+                listStyle: "none",
+                margin: 0,
+                padding: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.625rem",
+              }}
+            >
+              {SOURCES.map((source) => (
+                <li key={source.url}>
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="home-accent-link"
+                    style={{
+                      display: "inline-block",
+                      fontFamily: "var(--font-noto-sans)",
+                      fontWeight: 400,
+                      fontSize: "0.875rem",
+                      lineHeight: 1.5,
+                      color: "var(--color-subhead)",
+                    }}
+                  >
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       </main>

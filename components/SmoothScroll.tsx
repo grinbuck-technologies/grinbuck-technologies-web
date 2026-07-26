@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 import { ReactLenis, useLenis } from "lenis/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { REDUCED_MOTION_QUERY } from "@/lib/constants";
@@ -71,6 +72,36 @@ function GSAPSyncBridge() {
   return null;
 }
 
+/**
+ * `<ReactLenis root>` is mounted once in the root layout and never
+ * remounts across client-side navigations — Next.js's own scroll-to-top
+ * behavior on `<Link>` navigation gets immediately overridden the next
+ * frame by Lenis re-applying the *previous* page's remembered scroll
+ * position, since Lenis (not the browser) owns scroll and nothing had
+ * told it a navigation happened. This resets Lenis's own scroll state
+ * to the top on every pathname change, skipping the initial mount (where
+ * a direct hash-URL load should still land on its anchor via
+ * `GSAPSyncBridge`) and skipping navigations whose target URL itself has
+ * a hash (so in-page anchor links still work).
+ */
+function ScrollTopOnRouteChange() {
+  const pathname = usePathname();
+  const lenis = useLenis();
+  const isFirstRenderRef = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
+      return;
+    }
+    if (!lenis) return;
+    if (window.location.hash) return;
+    lenis.scrollTo(0, { immediate: true });
+  }, [pathname, lenis]);
+
+  return null;
+}
+
 type Props = { children: React.ReactNode };
 
 /**
@@ -99,6 +130,7 @@ export function SmoothScroll({ children }: Props) {
   return (
     <ReactLenis root options={{ lerp: 0.1, smoothWheel: true, autoRaf: false }}>
       <GSAPSyncBridge />
+      <ScrollTopOnRouteChange />
       {children}
     </ReactLenis>
   );
