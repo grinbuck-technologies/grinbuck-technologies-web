@@ -33,6 +33,7 @@ export async function submitPilotKitRequest(
   const contactName = getField(formData, "contactName");
   const contactEmail = getField(formData, "contactEmail");
   const unitCount = getField(formData, "unitCount");
+  const variant = getField(formData, "variant");
   const message = getField(formData, "message");
 
   if (
@@ -41,6 +42,7 @@ export async function submitPilotKitRequest(
     !contactName ||
     !contactEmail ||
     !unitCount ||
+    !variant ||
     !EMAIL_PATTERN.test(contactEmail)
   ) {
     return {
@@ -62,6 +64,7 @@ export async function submitPilotKitRequest(
       ["Contact name", contactName],
       ["Contact email", contactEmail],
       ["Estimated unit count / group size", unitCount],
+      ["Variant", variant],
       ["Message", message],
     ],
     contactEmail
@@ -90,9 +93,10 @@ export async function submitClickitQuoteRequest(
   const lookingFor = getField(formData, "lookingFor");
   const lookingForOther = getField(formData, "lookingForOther");
   const quantity = getField(formData, "quantity");
+  const variant = getField(formData, "variant");
   const message = getField(formData, "message");
 
-  if (!name || !email || !lookingFor || !EMAIL_PATTERN.test(email)) {
+  if (!name || !email || !lookingFor || !variant || !EMAIL_PATTERN.test(email)) {
     return {
       status: "error",
       message: "Please fill in every required field with a valid email address.",
@@ -109,6 +113,7 @@ export async function submitClickitQuoteRequest(
       ["Email", email],
       ["What they're looking for", resolvedLookingFor],
       ["Quantity", quantity],
+      ["Variant", variant],
       ["Message", message],
     ],
     email

@@ -7,7 +7,6 @@ import { gsap, ScrollTrigger, EASE_ENTER } from "@/lib/gsap";
 import {
   REDUCED_MOTION_QUERY,
   CONTACT_EMAIL,
-  SITE_LEGAL_NAME,
   NAV_SCROLL_OFFSET,
   SCROLL_DURATION,
   SECTION_MAX_WIDTH,
@@ -113,24 +112,33 @@ export function HomeClient() {
             margin: "0 auto",
           }}
         >
-          <div
-            className="js-hero"
-            style={{
-              ...EYEBROW_STYLE,
-              color: "var(--color-home-eyebrow)",
-              marginBottom: "28px",
-            }}
-          >
-            {SITE_LEGAL_NAME} &nbsp;&middot;&nbsp; Victoria, BC
-          </div>
+          {/* The wordmark IS the company name, stated once. Generous
+              margin-bottom below, not a tight lineHeight-driven gap, so
+              descenders never crowd the subhead that follows. "Serious
+              Tech. Serious Fun." is a confident h2 subhead underneath it. */}
           <h1
             className="js-hero"
             style={{
               fontFamily: "var(--font-noto-sans)",
-              fontSize: "clamp(3rem, 9vw, 8rem)",
+              fontSize: "clamp(3.5rem, 11vw, 8.5rem)",
               lineHeight: 0.95,
               fontWeight: 800,
               letterSpacing: "-0.03em",
+              margin: "0 0 32px",
+              overflowWrap: "break-word",
+            }}
+          >
+            <span style={{ color: "var(--color-home-ink)" }}>grin</span>
+            <span style={{ color: "var(--color-home-accent)" }}>buck</span>
+          </h1>
+          <h2
+            className="js-hero"
+            style={{
+              fontFamily: "var(--font-noto-sans)",
+              fontSize: "clamp(2rem, 5vw, 3.75rem)",
+              lineHeight: 1.05,
+              fontWeight: 800,
+              letterSpacing: "-0.02em",
               color: "var(--color-home-ink)",
               margin: 0,
             }}
@@ -140,7 +148,7 @@ export function HomeClient() {
             <span style={{ color: "var(--color-home-accent)" }}>
               Serious Fun.
             </span>
-          </h1>
+          </h2>
           <p
             className="js-hero"
             style={{

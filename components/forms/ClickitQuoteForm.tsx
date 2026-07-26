@@ -2,6 +2,7 @@
 import { useActionState, useState } from "react";
 import { submitClickitQuoteRequest } from "@/lib/actions/inquiries";
 import { IDLE_FORM_STATE } from "@/lib/actions/formState";
+import { CLICKER_VARIANTS } from "@/lib/clickitProducts";
 import {
   TextField,
   TextareaField,
@@ -41,6 +42,12 @@ export function ClickitQuoteForm() {
         <TextField label="Tell us more" name="lookingForOther" />
       )}
       <TextField label="Quantity, if applicable" name="quantity" />
+      <SelectField
+        label="Silent or audible?"
+        name="variant"
+        required
+        options={CLICKER_VARIANTS}
+      />
       <TextareaField label="Anything else we should know?" name="message" />
       <div>
         <SubmitButton pending={pending} label="Send request" />

@@ -2,6 +2,7 @@
 import { useActionState, useState } from "react";
 import { submitPilotKitRequest } from "@/lib/actions/inquiries";
 import { IDLE_FORM_STATE } from "@/lib/actions/formState";
+import { CLICKER_VARIANTS } from "@/lib/clickitProducts";
 import {
   TextField,
   TextareaField,
@@ -48,6 +49,12 @@ export function PilotKitForm() {
         name="unitCount"
         required
         placeholder="e.g. 25 students across two classrooms"
+      />
+      <SelectField
+        label="Silent or audible?"
+        name="variant"
+        required
+        options={CLICKER_VARIANTS}
       />
       <TextareaField label="Anything else we should know?" name="message" />
       <div>

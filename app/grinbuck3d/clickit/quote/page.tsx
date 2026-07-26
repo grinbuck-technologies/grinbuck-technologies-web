@@ -3,12 +3,12 @@ import { FormPageLayout } from "@/components/forms/FormPageLayout";
 import { ClickitQuoteForm } from "@/components/forms/ClickitQuoteForm";
 
 export const metadata: Metadata = {
-  title: "Get ClickIT for training: Grinbuck3D",
+  title: "Shop ClickIT: Grinbuck3D",
   description:
-    "Request ClickIT for dog training: personal purchase, bulk order, or a retail and wholesale enquiry.",
+    "Order ClickIT: personal purchase, dog training, bulk order, or a retail and wholesale enquiry.",
 };
 
-/** `/grinbuck3d/clickit/quote` route — quote request form for the training and bulk-order audience. */
+/** `/grinbuck3d/clickit/quote` route — general quote/shop request form: personal purchase, training, or bulk order. */
 export default function ClickitQuotePage() {
   return (
     <FormPageLayout
@@ -16,10 +16,10 @@ export default function ClickitQuotePage() {
         { label: "ClickIT", href: "/grinbuck3d/clickit" },
         { label: "Home", href: "/" },
       ]}
-      eyebrow="ClickIT / Quote Request"
-      heading="Get ClickIT for training."
+      eyebrow="ClickIT / Shop"
+      heading="Shop the clicker."
       intro={[
-        "Whether it's one clicker or a bulk order for a club or shop, tell us what you need.",
+        "Whatever you're looking for, personal use, dog training, or a bulk order, tell us what you need.",
         "We'll follow up directly.",
       ]}
     >

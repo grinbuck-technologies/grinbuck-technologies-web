@@ -20,7 +20,7 @@ import { subBrands } from "@/lib/subBrands";
 import { EYEBROW_STYLE } from "@/lib/typography";
 import { Nav } from "@/components/Nav";
 import { CtaButton } from "@/components/CtaButton";
-import { BambuLabP1SPrinter, FilamentSpool, PrintNozzle } from "@/components/illustrations";
+import { PrintBedGantry, FilamentSpool, PrintNozzle } from "@/components/illustrations";
 
 const grinbuck3d = ventures.find((v) => v.name === "Grinbuck3D")!;
 
@@ -59,6 +59,8 @@ const MAKE_COPY =
 const COMMERCIAL_HEADING = "Prototyping or a production run?";
 const COMMERCIAL_COPY =
   "If you have a part to prototype or a batch to produce, tell us what you need. We'll quote it.";
+
+const ETSY_SHOP_URL = "https://www.etsy.com/ca/shop/GrinbuckTech";
 
 /**
  * Client-rendered content for the Grinbuck3D venture page: a dark
@@ -119,12 +121,13 @@ export function Grinbuck3dClient() {
 
       <main>
         {/* ── S1: Hero — manufacturing and production, no ClickIT mention.
-            Same printer illustration as the homepage card: same family,
-            immediate recognition. ── */}
+            Deliberately a different illustration than the homepage card's
+            printer (BambuLabP1SPrinter is a fixed requirement there, not
+            here): the print bed and gantry, so clicking through reveals
+            something new rather than repeating the same picture. ── */}
         <section
           style={{
-            background: "var(--color-home-ink)",
-            color: "white",
+            background: "var(--color-paper)",
             padding: `clamp(5rem, 12vh, 10rem) ${SECTION_PADDING_X}`,
           }}
         >
@@ -142,7 +145,7 @@ export function Grinbuck3dClient() {
             <div>
               <div
                 className="js-hero"
-                style={{ ...EYEBROW_STYLE, color: "#8a8880", marginBottom: "18px" }}
+                style={{ ...EYEBROW_STYLE, color: "var(--color-subhead)", marginBottom: "18px" }}
               >
                 Manufacturing
               </div>
@@ -158,6 +161,7 @@ export function Grinbuck3dClient() {
                   fontWeight: 800,
                   letterSpacing: "-0.03em",
                   lineHeight: 0.95,
+                  color: "var(--color-ink)",
                   margin: "0 0 20px",
                   overflowWrap: "break-word",
                 }}
@@ -170,7 +174,7 @@ export function Grinbuck3dClient() {
                   fontFamily: "var(--font-noto-sans)",
                   fontWeight: 400,
                   fontSize: "1.0625rem",
-                  color: "#c9c6bd",
+                  color: "var(--color-subhead)",
                   maxWidth: "440px",
                   lineHeight: 1.55,
                 }}
@@ -178,13 +182,35 @@ export function Grinbuck3dClient() {
                 {grinbuck3d.description}
               </p>
             </div>
-            <BambuLabP1SPrinter
-              className="js-hero"
-              width="100%"
-              height="auto"
-              color="#F6F7F7"
-              strokeWidth={2.5}
-            />
+            <div>
+              <PrintBedGantry
+                className="js-hero"
+                width="100%"
+                height="auto"
+                color="var(--color-ink)"
+                strokeWidth={2.5}
+              />
+              {/* A light, secondary aside next to the illustration, not a
+                  commercial CTA, so it's a plain link rather than CtaButton. */}
+              <a
+                href={ETSY_SHOP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="js-hero home-accent-link"
+                style={{
+                  display: "block",
+                  marginTop: "0.75rem",
+                  textAlign: "right",
+                  fontFamily: "var(--font-noto-sans)",
+                  fontWeight: 700,
+                  fontSize: "0.875rem",
+                  color: "var(--color-subhead)",
+                  textDecoration: "none",
+                }}
+              >
+                See what we&apos;ve printed &rarr;
+              </a>
+            </div>
           </div>
         </section>
 
@@ -409,7 +435,7 @@ export function Grinbuck3dClient() {
         {/* ── S4: Commercial / B2B ── */}
         <section
           style={{
-            background: "var(--color-home-ink)",
+            background: "var(--color-brand-tint)",
             padding: `clamp(3rem, 6vh, 4.5rem) ${SECTION_PADDING_X}`,
             display: "flex",
             justifyContent: "center",
@@ -433,7 +459,7 @@ export function Grinbuck3dClient() {
                   fontSize: "clamp(1.5rem, 2.5vw, 2rem)",
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
-                  color: "white",
+                  color: "var(--color-ink)",
                   margin: "0 0 0.5rem",
                 }}
               >
@@ -445,7 +471,7 @@ export function Grinbuck3dClient() {
                   fontWeight: 400,
                   fontSize: "1rem",
                   lineHeight: 1.55,
-                  color: "#c9c6bd",
+                  color: "var(--color-subhead)",
                   margin: 0,
                   maxWidth: "520px",
                 }}
