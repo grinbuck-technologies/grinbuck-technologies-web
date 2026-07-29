@@ -35,11 +35,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://grinbuck.com"),
   title: "Grinbuck Technologies Inc.",
   description:
-    "A Victoria, BC-based holding company building and operating independent businesses for the long term.",
+    "Grinbuck Technologies builds hardware and software products in Victoria, BC, and runs a two-way trade venture between India and Canada.",
   openGraph: {
     title: "Grinbuck Technologies Inc.",
     description:
-      "A Victoria, BC-based holding company building and operating independent businesses for the long term.",
+      "Grinbuck Technologies builds hardware and software products in Victoria, BC, and runs a two-way trade venture between India and Canada.",
     url: "https://grinbuck.com",
     siteName: "Grinbuck Technologies Inc.",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Grinbuck Technologies Inc.",
     description:
-      "A Victoria, BC-based holding company building and operating independent businesses for the long term.",
+      "Grinbuck Technologies builds hardware and software products in Victoria, BC, and runs a two-way trade venture between India and Canada.",
     images: ["/og-image.png"],
   },
 };

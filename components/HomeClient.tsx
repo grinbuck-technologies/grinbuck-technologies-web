@@ -20,6 +20,7 @@ import {
 import { ventures } from "@/lib/ventures";
 import { EYEBROW_STYLE } from "@/lib/typography";
 import { Nav } from "@/components/Nav";
+import { Wordmark } from "@/components/Wordmark";
 import { BeatStack } from "@/components/BeatStack";
 import { BambuLabP1SPrinter, FinanceGrowth, TradeLoop } from "@/components/illustrations";
 
@@ -30,13 +31,13 @@ const qpQuintet = ventures.find((v) => v.name === "QP Quintet")!;
 const HOME_SECTION_PADDING_X = "5vw";
 
 const HERO_SUBHEAD =
-  "Grinbuck Technologies builds hardware, software, and the trade routes between them, out of Victoria, BC.";
+  "Grinbuck Technologies designs and manufactures 3D-printed products, builds great software, and engages in trade between India and Canada. Proudly based in Victoria, BC.";
 
-const ABOUT_HEADING = "Independent ventures. One way of building.";
+const ABOUT_HEADING = "Independent ventures. One team behind them.";
 
 const ABOUT_TEXT_LINES = [
-  "Grinbuck Technologies is based in Victoria, BC. We build hardware, software, and the trade routes between them.",
-  "Each venture runs on its own, with its own product, team, and customers. What ties them together is how we build it: fast, direct, and without excuses.",
+  "Grinbuck Technologies is a technology company in Victoria, BC. We make physical products, build software, and trade goods between India and Canada.",
+  "Each venture runs on its own, with its own product and its own customers. Every venture gets the same discipline: careful engineering, honest execution, and a standard that doesn't slip whether the product is physical, digital, or moving across a border.",
 ];
 
 /**
@@ -128,8 +129,10 @@ export function HomeClient() {
               overflowWrap: "break-word",
             }}
           >
-            <span style={{ color: "var(--color-home-ink)" }}>grin</span>
-            <span style={{ color: "var(--color-home-accent)" }}>buck</span>
+            <Wordmark
+              inkColor="var(--color-home-ink)"
+              accentColor="var(--color-home-accent)"
+            />
           </h1>
           <h2
             className="js-hero"
@@ -205,7 +208,7 @@ export function HomeClient() {
                 paddingTop: "24px",
               }}
             >
-              Three Ventures. One Bet on Building.
+              Three ventures. Built and run in-house.
             </div>
           </div>
 
@@ -276,7 +279,7 @@ export function HomeClient() {
                     margin: 0,
                   }}
                 >
-                  A real production floor. In-house printing and assembly, built in Victoria, BC.
+                  In-house printing and assembly on our own production floor in Victoria, BC.
                 </p>
               </div>
               <BambuLabP1SPrinter
@@ -577,11 +580,13 @@ export function HomeClient() {
                 fontSize: "22px",
                 fontWeight: 800,
                 letterSpacing: "-0.02em",
-                color: "var(--color-home-ink)",
                 marginBottom: "8px",
               }}
             >
-              GRINBUCK
+              <Wordmark
+                inkColor="var(--color-home-ink)"
+                accentColor="var(--color-home-accent)"
+              />
             </div>
             <div
               style={{

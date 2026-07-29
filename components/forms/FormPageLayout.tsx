@@ -1,4 +1,5 @@
-import { CONTACT_EMAIL, SECTION_MAX_WIDTH, SECTION_PADDING_X } from "@/lib/constants";
+import Link from "next/link";
+import { SECTION_MAX_WIDTH, SECTION_PADDING_X } from "@/lib/constants";
 import { Nav } from "@/components/Nav";
 
 type FormPageLayoutProps = {
@@ -107,8 +108,8 @@ export function FormPageLayout({ navLinks, eyebrow, heading, intro, children }: 
         >
           © {new Date().getFullYear()} Grinbuck Technologies Inc.
         </span>
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
+        <Link
+          href="/contact"
           className="footer-link"
           style={{
             fontFamily: "var(--font-display)",
@@ -118,8 +119,8 @@ export function FormPageLayout({ navLinks, eyebrow, heading, intro, children }: 
             opacity: 0.65,
           }}
         >
-          {CONTACT_EMAIL}
-        </a>
+          Contact
+        </Link>
       </footer>
     </div>
   );

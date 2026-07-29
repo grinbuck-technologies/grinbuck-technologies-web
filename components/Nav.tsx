@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLenis } from "lenis/react";
+import { Wordmark } from "@/components/Wordmark";
 import {
   Z_NAV,
-  CONTACT_EMAIL,
   NAV_HEIGHT,
   NAV_SCROLL_OFFSET,
   NAV_SHADOW_THRESHOLD,
@@ -109,8 +109,7 @@ export function Nav({ homeHref = "#hero", links }: NavProps) {
             textDecoration: "none",
           }}
         >
-          <span style={{ color: "var(--color-ink)" }}>grin</span>
-          <span style={{ color: "var(--color-brand)" }}>buck</span>
+          <Wordmark />
         </a>
       ) : (
         <Link
@@ -123,8 +122,7 @@ export function Nav({ homeHref = "#hero", links }: NavProps) {
             textDecoration: "none",
           }}
         >
-          <span style={{ color: "var(--color-ink)" }}>grin</span>
-          <span style={{ color: "var(--color-brand)" }}>buck</span>
+          <Wordmark />
         </Link>
       )}
 
@@ -157,13 +155,9 @@ export function Nav({ homeHref = "#hero", links }: NavProps) {
                 </Link>
               )
             )}
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
-          className="nav-link"
-          style={linkStyle}
-        >
+        <Link href="/contact" className="nav-link" style={linkStyle}>
           Contact
-        </a>
+        </Link>
       </nav>
     </header>
   );

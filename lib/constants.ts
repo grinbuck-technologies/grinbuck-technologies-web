@@ -12,7 +12,7 @@ export const SECTION_MAX_WIDTH = "1100px";
 // column width and the cap doesn't yet apply).
 export const SECTION_PADDING_X = "clamp(2rem, 6vw, 8rem)";
 
-export const CONTACT_EMAIL = "hello@grinbuck.com";
+export const CONTACT_EMAIL = "admin@grinbuck.com";
 export const SITE_LEGAL_NAME = "Grinbuck Technologies Inc.";
 
 // Nav dimensions

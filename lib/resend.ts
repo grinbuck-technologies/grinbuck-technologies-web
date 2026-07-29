@@ -30,7 +30,7 @@ export async function sendInquiryEmail(
 
   try {
     const { error } = await resend.emails.send({
-      from: "Grinbuck Technologies <forms@grinbuck.com>",
+      from: "Grinbuck Technologies <grinbuck.web@tabmonk.com>",
       to: CONTACT_EMAIL,
       replyTo,
       subject,

@@ -19,7 +19,7 @@ export default function ClickitQuotePage() {
       eyebrow="ClickIT / Shop"
       heading="Shop the clicker."
       intro={[
-        "Whatever you're looking for, personal use, dog training, or a bulk order, tell us what you need.",
+        "Personal use, dog training, or a bulk order: tell us what you need.",
         "We'll follow up directly.",
       ]}
     >

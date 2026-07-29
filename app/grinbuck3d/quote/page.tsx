@@ -19,7 +19,7 @@ export default function Grinbuck3dQuotePage() {
       eyebrow="Grinbuck3D / Production Enquiry"
       heading="Get a quote."
       intro={[
-        "Tell us about the part and the run, prototype or production.",
+        "Tell us about the part and how many you need, whether it's a single prototype or a full production run.",
         "We'll follow up with a quote.",
       ]}
     >

@@ -12,7 +12,7 @@ export const ventures: Venture[] = [
   {
     name: "Grinbuck3D",
     description:
-      "Additive manufacturing and 3D-print production for clients who need parts fast, precise, and built to spec. We take every job from prototype to production run.",
+      "3D-print production for clients who need parts made to spec and delivered on time. We take every job from prototype to production run.",
     url: "/grinbuck3d",
     status: "Live",
   },
@@ -27,7 +27,7 @@ export const ventures: Venture[] = [
   {
     name: "QP Quintet",
     description:
-      "QP Quintet trades both ways between India and Canada, importing and exporting goods across the Pacific.",
+      "QP Quintet imports and exports goods between India and Canada.",
     url: "https://qpquintet.ca",
     status: "In Development",
     logo: "/qp-canada-expanded.svg",

@@ -5,7 +5,6 @@ import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger, EASE_ENTER } from "@/lib/gsap";
 import {
   REDUCED_MOTION_QUERY,
-  CONTACT_EMAIL,
   SECTION_MAX_WIDTH,
   SECTION_PADDING_X,
   ANIM_DURATION_ENTER,
@@ -32,7 +31,7 @@ type Capability = { name: string; description: string };
 const CAPABILITIES: Capability[] = [
   {
     name: "Production floor",
-    description: "A real manufacturing floor, not a hobby setup.",
+    description: "Machines running client jobs daily, not a hobby setup.",
   },
   {
     name: "In-house, start to finish",
@@ -50,11 +49,11 @@ const CAPABILITIES: Capability[] = [
 
 const CAPABILITIES_HEADING = "What we do.";
 const CAPABILITIES_COPY =
-  "Every part starts as a design file and ends as a finished piece. We take it from prototype through production run, designed and assembled in-house.";
+  "Every part starts as a design file and ends as a finished piece. We handle every step in between in-house, from first prototype through the full production run.";
 
 const MAKE_HEADING = "What we make.";
 const MAKE_COPY =
-  "Alongside client and commercial work, Grinbuck3D designs and produces its own product lines in-house.";
+  "Alongside client work, Grinbuck3D designs and manufactures its own product lines in-house.";
 
 const COMMERCIAL_HEADING = "Prototyping or a production run?";
 const COMMERCIAL_COPY =
@@ -505,8 +504,8 @@ export function Grinbuck3dClient() {
         >
           © {new Date().getFullYear()} Grinbuck Technologies Inc.
         </span>
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
+        <Link
+          href="/contact"
           className="footer-link"
           style={{
             fontFamily: "var(--font-display)",
@@ -516,8 +515,8 @@ export function Grinbuck3dClient() {
             opacity: 0.65,
           }}
         >
-          {CONTACT_EMAIL}
-        </a>
+          Contact
+        </Link>
       </footer>
     </div>
   );

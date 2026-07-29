@@ -2,6 +2,7 @@
 
 import { sendInquiryEmail } from "@/lib/resend";
 import type { FormState } from "@/lib/actions/formState";
+import { CONTACT_EMAIL } from "@/lib/constants";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,8 +13,7 @@ function getField(formData: FormData, name: string): string {
 
 const GENERIC_ERROR: FormState = {
   status: "error",
-  message:
-    "Something went wrong sending your request. Please try again, or email us directly at hello@grinbuck.com.",
+  message: `Something went wrong sending your request. Please try again, or email us directly at ${CONTACT_EMAIL}.`,
 };
 
 /**
@@ -175,5 +175,42 @@ export async function submitGrinbuck3dQuoteRequest(
   return {
     status: "success",
     message: "Thanks. We've received your request and will follow up with a quote.",
+  };
+}
+
+/**
+ * Server action for the general contact form (`/contact`), for enquiries
+ * that don't fit one of the product-specific quote or pilot-kit forms.
+ */
+export async function submitContactRequest(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const name = getField(formData, "name");
+  const email = getField(formData, "email");
+  const message = getField(formData, "message");
+
+  if (!name || !email || !message || !EMAIL_PATTERN.test(email)) {
+    return {
+      status: "error",
+      message: "Please fill in every required field with a valid email address.",
+    };
+  }
+
+  const result = await sendInquiryEmail(
+    `Contact form: ${name}`,
+    [
+      ["Name", name],
+      ["Email", email],
+      ["Message", message],
+    ],
+    email
+  );
+
+  if (!result.success) return GENERIC_ERROR;
+
+  return {
+    status: "success",
+    message: "Thanks. We've received your message and will get back to you shortly.",
   };
 }

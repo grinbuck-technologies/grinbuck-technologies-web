@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Grinbuck3dClient } from "@/components/Grinbuck3dClient";
 
 export const metadata: Metadata = {
-  title: "Grinbuck3D: Additive manufacturing, Victoria BC",
+  title: "Grinbuck3D: 3D-print production, Victoria BC",
   description:
-    "Additive manufacturing and 3D-print production for clients who need parts fast, precise, and built to spec. From prototype to production run.",
+    "3D-print production for clients who need parts made to spec and delivered on time. From prototype to production run, in-house in Victoria, BC.",
 };
 
 /** `/grinbuck3d` route — the Grinbuck3D manufacturing venture's landing page. */

@@ -5,7 +5,6 @@ import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger, EASE_ENTER } from "@/lib/gsap";
 import {
   REDUCED_MOTION_QUERY,
-  CONTACT_EMAIL,
   NAV_SCROLL_OFFSET,
   SECTION_MAX_WIDTH,
   SECTION_PADDING_X,
@@ -33,7 +32,7 @@ const SECTION_PAD_Y = "clamp(2rem, 4vh, 3rem)";
 // defensible institutional pitch. Training is real and stays on the page,
 // but as a use case mentioned within the flow, not a mirrored second act.
 const HERO_THESIS =
-  "A click is one of the most versatile behavioural tools ever made. Most people reach for ClickIT to focus. Some use it to train a dog. Same clicker, built properly.";
+  "A click is one of the most versatile behavioural tools ever made. Most people reach for ClickIT to keep their hands busy. Some use it to train a dog. It's the same clicker either way.";
 
 const PRODUCT_FACTS = [
   "ABS plastic",
@@ -45,7 +44,7 @@ const PRODUCT_FACTS = [
 
 const VARIANT_BEATS = [
   "ClickIT ships in two variants: silent and audible. Same clicker, same build, different sound.",
-  "Silent tends to suit focus and quiet spaces. Audible tends to suit training. Neither is locked to one use case: pick whichever fits how you'll use it.",
+  "Silent suits quiet spaces. Audible suits training. Neither is locked to one use, so pick whichever fits how you'll use it.",
 ];
 
 type AudienceGroup = { label: string; audience: string[] };
@@ -102,7 +101,7 @@ const FOCUS_BEAT_GROUPS: string[][] = [
 ];
 
 const FOCUS_SOLUTION =
-  "ClickIT's clicker is built to the constraint teachers actually name: feedback you can feel without looking, that the room never hears.";
+  "ClickIT is built to the constraint teachers actually name: feedback you can feel without looking, at a volume the room never hears.";
 
 const FOCUS_HONESTY_LEAD =
   "Most fidget brands would rather you didn't look too closely at the research. ClickIT is built assuming you will.";
@@ -115,14 +114,14 @@ const FOCUS_HONESTY_BEATS = [
 ];
 
 const FOCUS_POSITIONING_BEATS = [
-  "ClickIT doesn't claim to improve focus, attention, grades, or ADHD symptoms. That's not a hedge, it's the point. This isn't a treatment.",
+  "ClickIT doesn't claim to improve focus, attention, grades, or ADHD symptoms. We're saying that plainly, because it's true, and because this isn't a treatment.",
   "It's a self-regulation tool engineered to be the least disruptive option in the room.",
   "Teachers already settled this. Fidgets are fine when they're tools, not toys, which means quiet, tactile, and put away when they stop helping.",
 ];
 
 const PILOT_HEADING = "Bringing ClickIT to your space?";
 const PILOT_COPY =
-  "Schools, daycares, kindergartens, pediatric dental offices, and children's hospitals are already putting ClickIT to work. If yours could use the same, tell us your unit count and we'll follow up with a custom quote.";
+  "ClickIT is built for schools, daycares, kindergartens, pediatric dental offices, and children's hospitals. Tell us your unit count and we'll follow up with a custom quote.";
 
 const TRAINING_INTRO =
   "People also use ClickIT for dog training and marker-based training more broadly. It's a genuine second use case, not a separate product.";
@@ -923,8 +922,8 @@ export function ClickitClient() {
         >
           © {new Date().getFullYear()} Grinbuck Technologies Inc.
         </span>
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
+        <Link
+          href="/contact"
           className="footer-link"
           style={{
             fontFamily: "var(--font-display)",
@@ -934,8 +933,8 @@ export function ClickitClient() {
             opacity: 0.65,
           }}
         >
-          {CONTACT_EMAIL}
-        </a>
+          Contact
+        </Link>
       </footer>
     </div>
   );
