@@ -1,6 +1,6 @@
 # grinbuck-technologies-web
 
-Public-facing landing page for **Grinbuck Technologies Inc.** — a Canadian holding company based in Victoria, BC.
+Public-facing landing page for **Grinbuck Technologies Inc.**, a Canadian holding company based in Victoria, BC.
 
 **Stack:** Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · GSAP · Lenis
 
@@ -21,66 +21,67 @@ issue and its own dedicated branch, per the process in place as of this PR.
 
 ## Overview
 
-This is not a traditional website. There is no native scroll. The experience is a **custom snap-scroll stage** — a fixed-position container holding a sequence of full-screen scenes, each revealed by a two-panel curtain wipe driven entirely by GSAP. The visitor moves through scenes via scroll, swipe, or keyboard. After the last scene, the curtain returns to the beginning. The loop is infinite.
+This is a native-scroll site. The page body scrolls normally; there is no scroll-jacking, no full-screen scene stage, and no snap-to-scene navigation. Scroll feel is smoothed by Lenis (`components/SmoothScroll.tsx`, wrapping `ReactLenis`), and each page's client component uses GSAP `ScrollTrigger` to run reveal-on-scroll animations (hero entrance, staggered section reveals) as the visitor scrolls down, not to control scroll itself. Reduced-motion preference (`prefers-reduced-motion`) is respected throughout.
 
-**Scene sequence:**
+`app/layout.tsx` sets `history.scrollRestoration = "manual"` in a blocking inline script so a page reload always starts at the top, since Lenis otherwise adopts whatever scroll position the browser tries to restore.
 
-```
-Intro Gate → Hero → Ventures (paginated) → About Us → [loops back]
-```
+### Routes
 
-| Scene | What it is |
+| Route | Page |
 |---|---|
-| **Intro Gate** | Two dark panels cover the screen. A progress bar fills. "WELCOME TO THE GRINVERSE" in Press Start 2P pixel font. Panels split open. |
-| **Hero** | The `grinbuck` wordmark assembles letter by letter with weighted gravity. `grin` in ink. `buck` arrives in olive a half-beat later. "Technologies Inc." fades in last. The mark breathes continuously via a variable font weight yoyo. |
-| **Ventures** | A cork bulletin board. Each venture is a physical card, pinned, draggable, unpinnable, and re-pinnable. Paginated at 6 cards per board. |
-| **About Us** | A clean institutional document — company overview, operating principles, sector coverage, and contact. Single screen, no scroll. |
+| `/` | Homepage: hero, ventures index, About teaser |
+| `/about` | Team roster: founder bios and portraits for Sarshad Abubaker and Kavita Uttam |
+| `/contact` | General contact form |
+| `/grinbuck3d` | Grinbuck3D venture landing page (3D-print production) |
+| `/grinbuck3d/quote` | Grinbuck3D manufacturing enquiry form (prototyping / production runs) |
+| `/grinbuck3d/clickit` | ClickIT product marketing page (a sub-brand under Grinbuck3D) |
+| `/grinbuck3d/clickit/quote` | ClickIT quote / shop request form (personal, training, or bulk order) |
+| `/grinbuck3d/clickit/pilot-kit` | ClickIT pilot-kit quote request form, for institutions |
+
+There is no dedicated `/grinbuck3d/clickit/shop` route. "Shop the clicker" CTAs on the ClickIT page point to `/grinbuck3d/clickit/quote`, and the Grinbuck3D page separately links out to an external Etsy shop.
 
 ---
 
-## The ventures system
+## Ventures and sub-brands
 
-> ⚠️ **The ventures currently listed are placeholders.** They demonstrate the system — real venture data, icons, and URLs will be updated as each venture launches.
+> ⚠️ **tabMonk and QP Quintet are external ventures**, listed on the homepage but hosted on their own domains (`tabmonk.com`, `qpquintet.ca`). Grinbuck3D and ClickIT are the only ventures with pages inside this repo.
 
-Adding, removing, or updating a venture is a **single-line change** in one file:
+Both lists are array-based by design, one file each, so adding or updating an entry is a single change with no other code touched:
 
 ```ts
-// lib/ventures.ts — the only file you ever touch for ventures
+// lib/ventures.ts: top-level ventures shown on the homepage
 export const ventures: Venture[] = [
-  {
-    name: "Grinbuck3D",
-    description: "Precision 3D-printed goods at scale.",
-    url: "/3d",           // subfolder, subdomain, or external URL — all work
-    status: "Live",
-  },
-  // Add a new object here.
-  // A new pinned card appears on the board automatically.
-  // If this is the 7th venture, a second paginated board scene is created automatically.
-  // No other code changes required.
+  { name: "Grinbuck3D", url: "/grinbuck3d", status: "Live", ... },
+  { name: "tabMonk", url: "https://www.tabmonk.com", status: "Live", ... },
+  { name: "QP Quintet", url: "https://qpquintet.ca", status: "In Development", ... },
 ];
 ```
 
-The `url` field accepts anything:
-- Internal route: `/3d`
-- External subdomain: `https://smallbizhub.ca`
-- External domain: `https://islandpass.ca`
+```ts
+// lib/subBrands.ts: product lines under Grinbuck3D
+export const subBrands: SubBrand[] = [
+  { name: "ClickIT", url: "/grinbuck3d/clickit", ... },
+];
+```
 
-Clicking a card opens the URL in a new tab.
+`lib/clickitProducts.ts` holds ClickIT's single product ("The Clicker") and its two sound variants (silent, audible), shared by every ClickIT form that asks a buyer to pick one.
 
 ---
 
-## Pinboard interactions
+## Forms and Resend integration
 
-The ventures board is fully interactive:
+Four forms send transactional email through a single shared helper, `sendInquiryEmail` in `lib/resend.ts`:
 
-| Interaction | Behavior |
-|---|---|
-| **Hover card** | Card straightens to 0°, shadow deepens |
-| **Click card body** | Navigates to venture URL |
-| **Click brass pin** | Card unpins and falls to the bottom of the board with a gravity animation |
-| **Drag fallen card up** | Release in the upper 80% of the board — card snaps to the nearest available pin slot |
-| **Drag pinned card** | Move to any other pin slot — cards swap positions |
-| **Scene re-entry** | All cards animate back to their pinned positions when you return to the board |
+| Form | Route | Component |
+|---|---|---|
+| Contact | `/contact` | `components/forms/ContactForm.tsx` |
+| Grinbuck3D quote | `/grinbuck3d/quote` | `components/forms/Grinbuck3dQuoteForm.tsx` |
+| ClickIT quote / shop | `/grinbuck3d/clickit/quote` | `components/forms/ClickitQuoteForm.tsx` |
+| ClickIT pilot kit | `/grinbuck3d/clickit/pilot-kit` | `components/forms/PilotKitForm.tsx` |
+
+Each form is a Next.js server action in `lib/actions/inquiries.ts` (`submitContactRequest`, `submitGrinbuck3dQuoteRequest`, `submitClickitQuoteRequest`, `submitPilotKitRequest`). All four validate their required fields and a basic email pattern, then call `sendInquiryEmail`, which sends from `Grinbuck Technologies <grinbuck.web@tabmonk.com>` to the address in `CONTACT_EMAIL` (`lib/constants.ts`, currently `admin@grinbuck.com`), with the submitter's own address set as `replyTo` so replies go straight to them. Shared submit/success/error UI state comes from `lib/actions/formState.ts`, and the three dedicated quote/pilot-kit pages share a page shell, `components/forms/FormPageLayout.tsx` (nav, compact hero, form, footer).
+
+Sending requires a `RESEND_API_KEY` environment variable (see `.env.example`) and a Resend-verified sending domain for `grinbuck.web@tabmonk.com`. Without a key configured, the build still succeeds, since the Resend client only throws when a send is actually attempted.
 
 ---
 
@@ -89,125 +90,101 @@ The ventures board is fully interactive:
 ```
 grinbuck-technologies-web/
 ├── app/
-│   ├── layout.tsx              # Font loading, metadata, SmoothScroll wrapper
-│   ├── page.tsx                # Composition only — IntroGate + SceneStage + Cursor
-│   └── globals.css             # Tailwind v4 @theme design tokens, grain overlay
+│   ├── layout.tsx                          # Font loading, metadata, SmoothScroll wrapper, scroll-restoration script
+│   ├── page.tsx                            # `/`: renders HomeClient
+│   ├── globals.css                         # Tailwind v4 @theme design tokens, grain overlay, hover states
+│   ├── about/
+│   │   ├── page.tsx                        # `/about`: team roster, portraits
+│   │   └── images/                         # Founder portrait JPEGs
+│   ├── contact/page.tsx                    # `/contact`
+│   └── grinbuck3d/
+│       ├── page.tsx                        # `/grinbuck3d`
+│       ├── quote/page.tsx                  # `/grinbuck3d/quote`
+│       └── clickit/
+│           ├── page.tsx                    # `/grinbuck3d/clickit`
+│           ├── quote/page.tsx              # `/grinbuck3d/clickit/quote`
+│           └── pilot-kit/page.tsx          # `/grinbuck3d/clickit/pilot-kit`
 │
 ├── components/
-│   ├── IntroGate.tsx           # Opening gate — progress bar + panel split animation
-│   ├── SceneStage.tsx          # Scene orchestrator — derives scenes, owns curtain refs
-│   ├── Wordmark.tsx            # grinbuck logotype — SplitText entrance + breathing
-│   ├── SmoothScroll.tsx        # Lenis wrapper — synced to GSAP ticker
-│   ├── Cursor.tsx              # Custom ink dot cursor — trails, turns olive near links
-│   ├── PinBoard.tsx            # Cork board — slot layout, drag system, GSAP resets
-│   ├── PinCard.tsx             # Single venture card — hover, drag state, unpin
-│   ├── BrassPin.tsx            # SVG brass pin — unique gradient ID per venture
-│   ├── PinHole.tsx             # Decorative empty slot indicator
-│   └── ClosingScene.tsx        # About Us — static, single-screen, no animation
+│   ├── HomeClient.tsx                      # Homepage: hero, ventures index, About teaser, scroll reveals
+│   ├── Grinbuck3dClient.tsx                # Grinbuck3D landing page content and reveals
+│   ├── ClickitClient.tsx                   # ClickIT landing page content and reveals
+│   ├── Nav.tsx                             # Sticky nav, Lenis-driven anchor/route scrolling
+│   ├── SmoothScroll.tsx                    # ReactLenis wrapper, synced to GSAP ticker, reduced-motion aware
+│   ├── Wordmark.tsx                        # Two-color "grinbuck" wordmark (ink + brand green spans)
+│   ├── CtaButton.tsx                       # Shared pill CTA link (internal route or external/mailto)
+│   ├── BeatStack.tsx                       # Stacks short prose "beats" instead of one dense paragraph
+│   ├── forms/
+│   │   ├── FormPageLayout.tsx              # Shared shell for the three dedicated form pages
+│   │   ├── fields.tsx                      # Shared input/label/textarea styles and field components
+│   │   ├── ContactForm.tsx
+│   │   ├── Grinbuck3dQuoteForm.tsx
+│   │   ├── ClickitQuoteForm.tsx
+│   │   └── PilotKitForm.tsx
+│   └── illustrations/
+│       ├── Wire.tsx                        # Shared single-stroke <svg> wrapper every icon renders through
+│       ├── types.ts                        # Shared IllustrationProps contract and defaults
+│       ├── index.ts                        # Barrel export
+│       └── *.tsx                           # One file per wire-drawn icon (printer, filament spool, paw print, etc.)
 │
 ├── lib/
-│   ├── ventures.ts             # ← THE ONLY FILE TO EDIT FOR VENTURE CHANGES
-│   ├── constants.ts            # Z-indices, media query strings
-│   ├── gsap.ts                 # Single GSAP registration point + EASE_ENTER / EASE_EXIT
-│   ├── pinboard.ts             # Pin slot geometry, shadows, cork texture, pagination
-│   ├── pinboardMotion.ts       # All drag/drop/snap logic — imperative, no React
-│   ├── sceneTransition.ts      # Curtain GSAP timeline — close, swap, open
-│   └── useSceneNavigation.ts   # Wheel/touch/keyboard → scene index, with cooldown lock
+│   ├── ventures.ts                         # Homepage venture list, array-based, single file to edit
+│   ├── subBrands.ts                        # Grinbuck3D product lines (currently: ClickIT)
+│   ├── clickitProducts.ts                  # ClickIT's product and sound variants
+│   ├── constants.ts                        # Contact email, nav/scroll/animation timing constants
+│   ├── typography.ts                       # Shared eyebrow/label text style
+│   ├── gsap.ts                             # Single GSAP registration point: ScrollTrigger, CustomEase, EASE_ENTER
+│   ├── resend.ts                           # sendInquiryEmail, shared Resend send call for every form
+│   └── actions/
+│       ├── inquiries.ts                    # Server actions for all four forms
+│       └── formState.ts                    # Shared FormState type and idle state
 │
 └── public/
-    ├── fonts/
-    │   └── GeneralSans-Variable.woff2   # Self-hosted variable font (weight axis 200–700)
-    └── gb.png                           # Transparent grinbuck mark
+    ├── fonts/GeneralSans-Variable.woff2    # Self-hosted variable font (weight axis 200-700)
+    ├── gb.png                              # Transparent grinbuck mark
+    ├── grinbuck-logo.png
+    ├── og-image.png
+    ├── tabmonk-wordmark.png / tabmonk-icon.png
+    └── qp-canada-expanded.svg
 ```
-
----
-
-## Architecture
-
-### No native scroll
-
-The page body never scrolls. `document.body.overflow` is locked to `hidden` for the entire session. All wheel, touch swipe, and keyboard input is captured by `useSceneNavigation` and translated into scene index changes. Lenis is installed and synced to GSAP's ticker, but immediately paused by `SceneStage` — it's available for future scroll-within-scene features.
-
-### Curtain wipe model
-
-Scene transitions are not CSS transitions or scroll-snapping. Every scene change is a GSAP timeline:
-
-```
-panels close (0.5s) → scene swaps instantly underneath → label fades in/out → panels open (0.55s)
-```
-
-The scene behind the curtain is already rendered and in its final state before the curtain opens. There is no flash, no layout shift, no in-between state ever visible.
-
-### Auto-paginated scene list
-
-Scenes are computed at runtime from `lib/ventures.ts`:
-
-```
-[HOME] + [PINBOARD × ceil(ventures.length / 6)] + [ABOUT]
-```
-
-The "About Us" scene is always appended last. Adding a 7th venture automatically creates a second pinboard scene with the label "OUR VENTURES — CONTINUED". No hardcoded scene count anywhere.
-
-### Imperative motion layer
-
-Pinboard drag mechanics live entirely in `lib/pinboardMotion.ts` — outside React. The component passes DOM refs; the motion module attaches raw pointer event listeners and calls GSAP directly. React state is only involved when visible content changes (card rotations). This keeps the RAF loop clean and prevents React re-renders from interfering with animation.
-
-### Single GSAP registration point
-
-`lib/gsap.ts` is the only place GSAP and its plugins are imported and registered. Every other file imports from this module. Plugins are always available when animation code runs — no registration race conditions.
 
 ---
 
 ## Design system
 
-### Tokens
+### Brand color
 
-All tokens are defined in `app/globals.css` under `@theme` and available everywhere as CSS variables:
+The site has a single accent color, Grinbuck green, defined once in `app/globals.css` and referenced everywhere as `var(--color-brand)`:
 
 | Token | Value | Role |
 |---|---|---|
-| `--color-paper` | `#FAFAF7` | Page background, card backgrounds |
-| `--color-ink` | `#0A0A0A` | Body text, cursor dot |
-| `--color-olive` | `#6E7A3E` | Brand accent — the only color used for interaction |
-| `--color-olive-deep` | `#4F5A2C` | Hover and active states |
-| `--color-gate` | `#0E0F0C` | Intro gate and curtain panels |
-| `--color-cork` | `#C4A882` | Pinboard background |
-| `--color-cork-border` | `#8B6914` | Pinboard frame |
-| `--color-pin` | `#B8963E` | Brass pin color |
-| `--color-wall` | `#2C2416` | Wall behind the pinboard |
+| `--color-brand` | `oklch(0.424 0.112 145.6)` (hex `#4A7C2F`) | The one accent color, shared by every Grinbuck-family property |
+| `--color-brand-on-dark` | `oklch(0.72 0.16 145.6)` | Same hue, lightened for text on dark backgrounds (WCAG AA) |
+| `--color-brand-tint` | `oklch(0.96 0.02 145.6)` | Light tonal tint for panel/band backgrounds |
 
-### Easing curves
-
-Two brand curves are defined once and imported as constants — never hardcode the string names:
-
-```ts
-import gsap, { EASE_ENTER, EASE_EXIT } from "@/lib/gsap";
-
-// EASE_ENTER — "weight"    → cubic-bezier(0.16, 1, 0.3, 1)  — weighted settle, no bounce
-// EASE_EXIT  — "weightOut" → cubic-bezier(0.7, 0, 0.84, 0)  — strong acceleration out
-```
-
-### Z-index layers
-
-All z-indices are named constants in `lib/constants.ts`:
-
-| Constant | Value | Layer |
-|---|---|---|
-| `Z_WORDMARK` | `5` | Persistent wordmark + olive underline |
-| `Z_CURTAIN` | `50` | Transition panels |
-| `Z_CURTAIN_TEXT` | `51` | Scene label over closed curtain |
-| `Z_INTRO_GATE` | `100` | Opening gate |
-| `Z_CURSOR` | `99999` | Custom cursor dot |
+`--color-brand` shifts to a richer green under `prefers-color-scheme: dark`. Base page tokens (`--color-paper` `#FAFAF7`, `--color-ink` `#0A0A0A`, `--color-hairline`, `--color-subhead`, `--color-muted`) hold the neutral palette used site-wide, including `/about` and `/contact`. A second, cooler set (`--color-home-paper`, `--color-home-ink`, `--color-home-accent`, `--color-home-hairline`, `--color-home-eyebrow`, `--color-home-neutral-tint`) is scoped to the "Serious Tech. Serious Fun." homepage redesign (`/`, `/grinbuck3d`, `/grinbuck3d/clickit`); `--color-home-accent` is the same brand green, not a second color.
 
 ### Typography
 
-| Role | Family | Source |
+| Role | Family | Scope |
 |---|---|---|
-| Display / wordmark | **General Sans** (variable, wt 200–700) | [Fontshare](https://www.fontshare.com/fonts/general-sans) — self-hosted at `public/fonts/` |
-| Labels / mono | **Geist Mono** | `geist` npm package via `next/font` |
-| Intro gate only | **Press Start 2P** | `next/font/google` — scoped to `IntroGate`, not loaded globally |
+| Display (default) | **General Sans** (variable, wt 200-700), self-hosted at `public/fonts/` | Site-wide default, including `/about` and `/contact` |
+| Body / headings | **Noto Sans** (wt 400/700/800), `next/font/google` | `/`, `/grinbuck3d`, `/grinbuck3d/clickit` only |
+| Eyebrows / labels | **Noto Sans Mono** (wt 400/500/700), `next/font/google`, exposed as `var(--font-mono)` | Same three redesign pages |
 
-General Sans **must** be the variable `.woff2` file. The wordmark breathing animation depends on the `font-weight` axis spanning 200–700.
+### Illustrations
+
+`components/illustrations/` holds a set of wire-drawn SVG icons (Bambu Lab printer, filament spool, print nozzle, print bed gantry, finance growth, trade loop, focus tap, paw print), each a single continuous stroke with no fill. Every icon renders through the shared `Wire` wrapper and `IllustrationProps` contract in `types.ts`, so `color` (defaulting to `currentColor`) is the only thing that varies between instances.
+
+### Easing
+
+`lib/gsap.ts` is the single place GSAP and its plugins (`ScrollTrigger`, `CustomEase`) are imported and registered; every other file imports GSAP from this module. One custom eased curve is registered for enter/reveal animations:
+
+```ts
+import { gsap, EASE_ENTER } from "@/lib/gsap";
+
+// EASE_ENTER: "weight" → cubic-bezier(0.16, 1, 0.3, 1), weighted settle, no bounce
+```
 
 ---
 
@@ -230,13 +207,13 @@ pnpm lint
 pnpm build
 ```
 
-Requires **Node 20+** and **pnpm**.
+Requires **Node 20+** and **pnpm**. Copy `.env.example` to `.env.local` and set `RESEND_API_KEY` to send form submissions locally; the app runs and builds without it, but form sends will fail.
 
 ---
 
 ## Deployment
 
-Deployed to Vercel. No environment variables required — this is a fully static public site with no server-side data fetching.
+Deployed to Vercel. `RESEND_API_KEY` must be set in the deployment environment for the contact, quote, and pilot-kit forms to send; the rest of the site has no other server-side data fetching.
 
 | Setting | Value |
 |---|---|
@@ -250,12 +227,12 @@ Deployed to Vercel. No environment variables required — this is a fully static
 
 ## Code standards
 
-- **Zero ESLint errors, zero TypeScript errors** — verified after every session with `pnpm lint` and `pnpm tsc --noEmit`
-- **Constants over magic values** — all colors, durations, z-indices, easing names, and breakpoints are named exports
-- **One job per function** — functions over 30 lines are broken into named sub-functions
-- **Cleanup on unmount** — every `useGSAP`, every event listener, and every ScrollTrigger is killed on unmount
-- **No dead code** — unused files, imports, and variables are removed
-- **Inline styles over utility classes** — keeps animation-relevant geometry co-located with animation code; exceptions are noted in `ClosingScene.tsx`
+- **Zero ESLint errors, zero TypeScript errors:** verified with `pnpm lint` and `pnpm tsc --noEmit`
+- **Constants over magic values:** colors, durations, z-indices, easing names, and breakpoints are named exports in `lib/constants.ts` and `lib/gsap.ts`
+- **One job per function:** functions over 30 lines are broken into named sub-functions
+- **Cleanup on unmount:** every `useGSAP`, every event listener, and every ScrollTrigger is killed on unmount
+- **No dead code:** unused files, imports, and variables are removed
+- **Inline styles over utility classes:** keeps layout and animation-relevant geometry co-located with the component; Tailwind is used mainly for the `@theme` token block and a few responsive overrides in `globals.css`
 
 ---
 
@@ -263,15 +240,14 @@ Deployed to Vercel. No environment variables required — this is a fully static
 
 | Package | Version | Purpose |
 |---|---|---|
-| `next` | 16.2.9 | App Router framework, `next/font`, `next/image` |
+| `next` | 16.2.9 | App Router framework, `next/font`, `next/image`, server actions |
 | `react` / `react-dom` | 19.2.4 | UI rendering |
-| `gsap` | ^3.15 | All animation — timelines, tweens, SplitText, CustomEase, Draggable |
-| `@gsap/react` | ^2.1.2 | `useGSAP` hook — React-aware animation context with auto-cleanup |
-| `lenis` | ^1.3.23 | Smooth scroll — synced to GSAP ticker, paused during snap-scroll mode |
-| `geist` | ^1.7.2 | Geist Mono variable font |
-| `lucide-react` | ^1.17 | Icon library — installed, reserved for venture card icons |
-| `three` · `@react-three/fiber` · `@react-three/drei` | — | 3D engine — installed, reserved for future scenes |
-| `tailwindcss` | ^4 | Utility CSS — used primarily for the `@theme` token block |
+| `gsap` | ^3.15 | Scroll-reveal animation: `ScrollTrigger` and `CustomEase`, via `lib/gsap.ts` |
+| `@gsap/react` | ^2.1.2 | `useGSAP` hook, React-aware animation context with auto-cleanup |
+| `lenis` | ^1.3.23 | Smooth scroll, synced to GSAP's ticker |
+| `geist` | ^1.7.2 | Installed; General Sans and Noto Sans are the fonts actually in use (see Typography above) |
+| `resend` | ^6.18.0 | Sends the contact, quote, and pilot-kit form emails (`lib/resend.ts`) |
+| `tailwindcss` | ^4 | Utility CSS, used primarily for the `@theme` token block |
 
 ---
 
