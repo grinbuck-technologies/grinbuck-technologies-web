@@ -6,6 +6,19 @@ Public-facing landing page for **Grinbuck Technologies Inc.** — a Canadian hol
 
 ---
 
+## Recent changes (PR #1)
+
+This PR reconciles the `core-implementation` branch with `main`. It contains
+the full initial site build (homepage, Grinbuck3D, ClickIT, tabMonk/QP Quintet
+venture pages, the green brand system, Resend-backed contact/quote/pilot-kit
+forms) plus its actual new addition: founder portrait images on `/about`
+(see #3).
+
+Going forward, `core-implementation` is retired. Each change gets its own
+issue and its own dedicated branch, per the process in place as of this PR.
+
+---
+
 ## Overview
 
 This is not a traditional website. There is no native scroll. The experience is a **custom snap-scroll stage** — a fixed-position container holding a sequence of full-screen scenes, each revealed by a two-panel curtain wipe driven entirely by GSAP. The visitor moves through scenes via scroll, swipe, or keyboard. After the last scene, the curtain returns to the beginning. The loop is infinite.
